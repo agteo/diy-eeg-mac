@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diy-eeg-mac"
+version = "0.1.0"
+description = "macOS BLE-to-LSL host tools for a DIY EEG device"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "AT" }]
+dependencies = [
+  "bleak>=0.22,<1",
+  "matplotlib>=3.8,<4",
+  "numpy>=1.26,<3",
+  "pylsl>=1.16,<2",
+  "pyxdf>=1.16,<2",
+  "scipy>=1.11,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+
+[project.scripts]
+diy-eeg-receiver = "diy_eeg_mac.receiver:main"
+diy-eeg-alpha = "diy_eeg_mac.alpha:main"
+diy-eeg-analyze-alpha = "diy_eeg_mac.analyze_alpha:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
