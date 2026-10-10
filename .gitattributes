@@ -1,0 +1,13 @@
+# Imported CAD, fabrication, and firmware files are preserved byte-for-byte.
+Hardware/** -whitespace
+Production_Files/** -whitespace
+Software/Firmware_Platformio_Project/** -whitespace
+
+*.pdf binary
+*.stl binary
+*.ipt binary
+*.stp binary
+*.PcbDoc binary
+*.SchDoc binary
+*.IntLib binary
+*.PcbLib binary

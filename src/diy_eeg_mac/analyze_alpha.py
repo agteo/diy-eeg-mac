@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Plot raw and alpha-band EEG from a recorded XDF file."""
 
 from __future__ import annotations

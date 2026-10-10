@@ -1,13 +1,17 @@
 # DIY EEG Mac
 
-macOS host tools for a compatible DIY EEG device that transmits eight-channel ADS1299 samples over Bluetooth Low Energy (BLE). The first release is deliberately small: it publishes EEG to Lab Streaming Layer (LSL), provides alpha-session markers, and plots one recorded XDF channel.
+Private, macOS-focused learning and experimentation workspace for an eight-channel ADS1299/ESP32-S3 EEG device. It brings together the upstream hardware and manufacturing reference materials with a Mac-native BLE-to-LSL host workflow.
 
-This is a new, standalone macOS software repository. It does **not** include a PCB, enclosure, firmware, production/manufacturing files, reports, images, or the original Windows test suite.
+This repository incorporates GPL-3.0 material from [Xavier Asghar's Low-Cost-EEG project](https://github.com/XavierAsghar/Low-Cost-EEG). The hardware, enclosure, manufacturing outputs, original firmware, and reference PDFs remain upstream work; this repository adds macOS host tools and Mac-oriented setup notes. It is not affiliated with, or an official port of, the upstream project.
 
 ## Scope and current status
 
 Included:
 
+- Upstream hardware design files in [`Hardware`](Hardware)
+- Gerbers, drill files, enclosure STLs, BOM, and schematic/layout PDF in [`Production_Files`](Production_Files)
+- Upstream reference PDFs in [`Documentation`](Documentation), with a Mac usage guide
+- The upstream PlatformIO firmware project in [`Software/Firmware_Platformio_Project`](Software/Firmware_Platformio_Project)
 - BLE receiver that publishes an eight-channel `Custom_ESP32_EEG` LSL stream at 500 Hz
 - Alpha eyes-open / eyes-closed LSL marker session
 - XDF alpha-band plotter
@@ -15,7 +19,6 @@ Included:
 
 Not included or validated:
 
-- Hardware design or firmware flashing instructions
 - Medical or diagnostic use
 - P300 and other latency-sensitive experiments
 - Hardware-timestamped stimulus synchronisation
@@ -24,7 +27,17 @@ The target device sends eight samples in each BLE notification and does not supp
 
 ## Safety
 
-This software is for educational, non-medical work. When electrodes are attached to a person, use a battery-powered device with USB-C **physically disconnected**. Do not charge it, attach a programmer, or connect grounded accessories during a recording.
+This software is for educational, non-medical work. When electrodes are attached to a person, use a battery-powered device with USB-C **physically disconnected**. Do not charge it, attach a programmer, or connect grounded accessories during a recording. Uploading firmware and using USB serial monitoring are bench-only tasks, before electrodes are attached.
+
+## Hardware and fabrication
+
+Use [`Production_Files`](Production_Files) for fabrication: Gerber/NC drill data for the PCB, STL files for the enclosure, and the accompanying BOM and schematic/layout PDF. These manufacturing outputs are platform-neutral; a Mac is sufficient to inspect, upload, or send them to a fabrication service. See [production notes](Production_Files/MACOS_NOTES.md) before ordering.
+
+The editable PCB project is Altium Designer source. Altium is not natively available on macOS, so use the supplied fabrication outputs and PDFs on a Mac; edit the source only through a suitable Windows environment if later revisions require it.
+
+## Firmware on macOS
+
+The included firmware is a PlatformIO project. Follow [the macOS firmware guide](Software/Firmware_Platformio_Project/MACOS.md) to install PlatformIO, build, flash, and monitor it. The target is `esp32-s3-devkitc-1` and its firmware BLE stream is what the Mac host tools expect.
 
 ## Install
 
@@ -61,10 +74,6 @@ diy-eeg-analyze-alpha /absolute/path/to/recording.xdf --channel 0
 
 Use `diy-eeg-alpha --phase-duration 5` for a short dry run.
 
-## Compatible-device reference
-
-The target BLE service name, characteristic UUID, frame layout, and LSL stream name were selected to interoperate with the publicly available [Low-Cost-EEG](https://github.com/XavierAsghar/Low-Cost-EEG) hardware project. This repository is not affiliated with or an official port of that project.
-
 ## License
 
-[MIT](LICENSE).
+This repository is licensed under [GNU GPL v3.0](LICENSE). The imported upstream materials retain their original notices. See [NOTICE.md](NOTICE.md) for provenance and modification boundaries.

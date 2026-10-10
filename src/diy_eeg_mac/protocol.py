@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Binary protocol helpers for the supported eight-channel BLE EEG stream."""
 
 from __future__ import annotations

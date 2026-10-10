@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "diy-eeg-mac"
 version = "0.1.0"
-description = "macOS BLE-to-LSL host tools for a DIY EEG device"
+description = "macOS BLE-to-LSL host tools for an ADS1299 DIY EEG device"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Run a marked eyes-open / eyes-closed alpha session on macOS."""
 
 from __future__ import annotations
