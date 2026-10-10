@@ -6,4 +6,4 @@ It contains the standard RS-274X Gerber layers for the four-layer board plus the
 
 It includes the two outline/support files retained by the validated package. It excludes Gerber X2, BOMs, CPL/pick-and-place data, PDFs, STL files, source CAD files, and design history.
 
-Before placing an order, inspect JLCPCB's rendered preview and confirm the board outline, four copper layers, and drill holes. This ZIP is not an SMT assembly package; assembly additionally requires the matching JLC-formatted BOM and CPL file from the advisor package.
+Before placing an order, inspect JLCPCB's rendered preview and confirm the board outline, four copper layers, and drill holes. For assembly, upload the matching `BOM_JLCPCB_EEG.csv` and `CPL_JLCPCB_EEG.csv` in this directory after uploading the fabrication ZIP.
