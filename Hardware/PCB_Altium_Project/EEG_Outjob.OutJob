@@ -209,9 +209,9 @@ Configuration9_Name1=OutputConfigurationParameter1
 Configuration9_Item1=Compression_None=True|Compression_tar_tgz=True|Compression_zip=True|DifferentFootprints=False|ExportPositivePlaneLayers=False|GenerateDRCRulesFile=False|IncludeComponents=True|IncludeNetList=True|IncludeUnconnectedMidLayerPads=False|IncludeVariantsData=False|IntentionalShorts=False|MergeNetTieNets=False|NeutralizeNetNames=False|ObjsInsideBoardOutlineOnly=False|ODBProfileLayer=-1000|ODBProfileLayerV7=-1|PlotBackDrillingPairs=False|PlotBlindViasPairs=False|PlotBottomLayerPlot=False|PlotBottomOverlayPlot=True|PlotBottomPastePlot=True|PlotBottomSolderPlot=True|PlotCounterHolesPairs=False|PlotDrillDrawingPairs=False|PlotDrillGuidePairs=False|PlotInternalPlane10Plot=False|PlotInternalPlane11Plot=False|PlotInternalPlane12Plot=False|PlotInternalPlane13Plot=False|PlotInternalPlane14Plot=False|PlotInternalPlane15Plot=False|PlotInternalPlane16Plot=False|PlotInternalPlane1Plot=False|PlotInternalPlane2Plot=False|PlotInternalPlane3Plot=False|PlotInternalPlane4Plot=False|PlotInternalPlane5Plot=False|PlotInternalPlane6Plot=False|PlotInternalPlane7Plot=False|PlotInternalPlane8Plot=False|PlotInternalPlane9Plot=False|PlotKeepOutLayerPlot=False|PlotMechanical10Plot=False|PlotMechanical11Plot=False|PlotMechanical12Plot=False|PlotMechanical13Plot=False|PlotMechanical14Plot=False|PlotMechanical15Plot=False|PlotMechanical16Plot=False|PlotMechanical1Plot=False|PlotMechanical2Plot=False|PlotMechanical3Plot=False|PlotMechanical4Plot=False|PlotMechanical5Plot=False|PlotMechanical6Plot=False|PlotMechanical7Plot=False|PlotMechanical8Plot=False|PlotMechanical9Plot=False|PlotMicroViasPairs=False|PlotMidLayer10Plot=False|PlotMidLayer11Plot=False|PlotMidLayer12Plot=False|PlotMidLayer13Plot=False|PlotMidLayer14Plot=False|PlotMidLayer15Plot=False|PlotMidLayer16Plot=False|PlotMidLayer17Plot=False|PlotMidLayer18Plot=False|PlotMidLayer19Plot=False|PlotMidLayer1Plot=False|PlotMidLayer20Plot=False|PlotMidLayer21Plot=False|PlotMidLayer22Plot=False|PlotMidLayer23Plot=False|PlotMidLayer24Plot=False|PlotMidLayer25Plot=False|PlotMidLayer26Plot=False|PlotMidLayer27Plot=False|PlotMidLayer28Plot=False|PlotMidLayer29Plot=False|PlotMidLayer2Plot=False|PlotMidLayer30Plot=False|PlotMidLayer3Plot=False|PlotMidLayer4Plot=False|PlotMidLayer5Plot=False|PlotMidLayer6Plot=False|PlotMidLayer7Plot=False|PlotMidLayer8Plot=False|PlotMidLayer9Plot=False|PlotNPTHPairs=False|PlotPTHPairs=False|PlotTopLayerPlot=False|PlotTopOverlayPlot=True|PlotTopPastePlot=True|PlotTopSolderPlot=True|PlotViaTypeDrillDrawingPairs=False|PlotViaTypeDrillGuidePairs=False|PlotViaTypeDrillPairs=False|Record=ODBView|RemoveComponentProperties=False|ToolsByDrillSymbols=False|Units=Metric|Version=8.1|DocumentPath=C:\Users\xavie\Documents\University Work\Year 4\FYP\CAD\Atlium Project\ADS ESP EEG\EEG_PCB.PcbDoc
 
 [PublishSettings]
-OutputFilePath2=C:\Users\xavie\Documents\University Work\Year 4\FYP\Github Repo\Low-Cost-EEG\Hardware\PCB_Altium_Project\Project Outputs for Low_Cost_EEG\EEG Project Outputs.pdf
+OutputFilePath2=C:\Users\xavie\Documents\University Work\Year 4\FYP\Github Repo\Low-Cost-EEG\Hardware\PCB_Altium_Project\Project Outputs for DIY-EEG\EEG Project Outputs.pdf
 ReleaseManaged2=1
-OutputBasePath2=Project Outputs for Low_Cost_EEG
+OutputBasePath2=Project Outputs for DIY-EEG
 OutputPathMedia2=
 OutputPathMediaValue2=
 OutputPathOutputer2=[Output Type]
@@ -236,9 +236,9 @@ ShowComponentParameters2=0
 GlobalBookmarks2=0
 PDFACompliance2=Disabled
 PDFVersion2=Default
-OutputFilePath3=C:\Users\xavie\Documents\University Work\Year 4\FYP\Github Repo\Low-Cost-EEG\Hardware\PCB_Altium_Project\Project Outputs for Low_Cost_EEG\
+OutputFilePath3=C:\Users\xavie\Documents\University Work\Year 4\FYP\Github Repo\Low-Cost-EEG\Hardware\PCB_Altium_Project\Project Outputs for DIY-EEG\
 ReleaseManaged3=1
-OutputBasePath3=Project Outputs for Low_Cost_EEG
+OutputBasePath3=Project Outputs for DIY-EEG
 OutputPathMedia3=
 OutputPathMediaValue3=
 OutputPathOutputer3=[Output Name]
@@ -251,9 +251,9 @@ OutputFileNameSpecial3=
 OpenOutput3=1
 
 [GeneratedFilesSettings]
-RelativeOutputPath2=C:\Users\xavie\Documents\University Work\Year 4\FYP\Github Repo\Low-Cost-EEG\Hardware\PCB_Altium_Project\Project Outputs for Low_Cost_EEG\EEG Project Outputs.pdf
+RelativeOutputPath2=C:\Users\xavie\Documents\University Work\Year 4\FYP\Github Repo\Low-Cost-EEG\Hardware\PCB_Altium_Project\Project Outputs for DIY-EEG\EEG Project Outputs.pdf
 OpenOutputs2=1
-RelativeOutputPath3=C:\Users\xavie\Documents\University Work\Year 4\FYP\Github Repo\Low-Cost-EEG\Hardware\PCB_Altium_Project\Project Outputs for Low_Cost_EEG\
+RelativeOutputPath3=C:\Users\xavie\Documents\University Work\Year 4\FYP\Github Repo\Low-Cost-EEG\Hardware\PCB_Altium_Project\Project Outputs for DIY-EEG\
 OpenOutputs3=1
 AddToProject3=1
 TimestampFolder3=0
