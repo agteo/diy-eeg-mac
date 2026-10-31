@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *.xdf
+recordings/*
+!recordings/.gitkeep
 .DS_Store
 .pytest_cache/
 

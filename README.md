@@ -61,7 +61,7 @@ Run the receiver in one Terminal window:
 diy-eeg-receiver
 ```
 
-In another, start LabRecorder, select `Custom_ESP32_EEG` and `AlphaMarkers`, begin recording, then run:
+In another, start LabRecorder. Set the study root to `recordings/` in this repo, select `Custom_ESP32_EEG` and `AlphaMarkers`, begin recording, then run:
 
 ```zsh
 diy-eeg-alpha
