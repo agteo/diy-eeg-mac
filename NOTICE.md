@@ -1,6 +1,6 @@
 # Provenance and modification notice
 
-This private research repository incorporates material from [Low-Cost-EEG](https://github.com/XavierAsghar/Low-Cost-EEG), authored by Xavier Asghar and published under GNU GPL v3.0.
+This repository incorporates material from [Low-Cost-EEG](https://github.com/XavierAsghar/Low-Cost-EEG), authored by Xavier Asghar and published under GNU GPL v3.0.
 
 Imported upstream material (preserved unmodified except for the added macOS guidance files listed below):
 
