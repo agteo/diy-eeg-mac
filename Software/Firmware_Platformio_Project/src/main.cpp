@@ -99,7 +99,7 @@ void setup() {
   ADS.WREG(CONFIG4, 0b00000010);    // Enable lead-off comparator
 
   ADS.WREG(MISC1, 0b00100100);      // Connect SRB1 to inverting inputs.
-  ADS.WREG(BIAS_SENSP, 0b00000001); // Set which positive channels to use for bias
+  ADS.WREG(BIAS_SENSP, 0b00001111); // bias derived from channels 1-4 positive inputs
   ADS.WREG(BIAS_SENSN, 0b00000000); // Set which negative channels to use for bias
 
   ADS.WREG(LOFF, 0b00000100);
