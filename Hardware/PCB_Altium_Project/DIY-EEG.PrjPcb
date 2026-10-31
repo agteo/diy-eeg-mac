@@ -186,255 +186,255 @@ GenerateClassCluster=0
 DocumentUniqueId=
 
 [GeneratedDocument1]
-DocumentPath=Project Outputs for Low_Cost_EEG\Bill of Materials\Bill of Materials-EEG_BoM.xlsx
+DocumentPath=Project Outputs for DIY-EEG\Bill of Materials\Bill of Materials-EEG_BoM.xlsx
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\comp_+_bot\components
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\comp_+_bot\components
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\comp_+_top\components
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\comp_+_top\components
 DItemRevisionGUID=
 
 [GeneratedDocument4]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\eda\data
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\eda\data
 DItemRevisionGUID=
 
 [GeneratedDocument5]
-DocumentPath=Project Outputs for Low_Cost_EEG\Design Rule Check - EEG_PCB.html
+DocumentPath=Project Outputs for DIY-EEG\Design Rule Check - EEG_PCB.html
 DItemRevisionGUID=
 
 [GeneratedDocument6]
-DocumentPath=Project Outputs for Low_Cost_EEG\NC Drill Files\EEG_PCB-RoundHoles.TXT
+DocumentPath=Project Outputs for DIY-EEG\NC Drill Files\EEG_PCB-RoundHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Project Outputs for Low_Cost_EEG\NC Drill Files\EEG_PCB-SlotHoles.TXT
+DocumentPath=Project Outputs for DIY-EEG\NC Drill Files\EEG_PCB-SlotHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument8]
-DocumentPath=Project Outputs for Low_Cost_EEG\NC Drill Files\EEG_PCB.DRR
+DocumentPath=Project Outputs for DIY-EEG\NC Drill Files\EEG_PCB.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument9]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.EXTREP
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument10]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.EXTREP
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument11]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.G1
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.G1
 DItemRevisionGUID=
 
 [GeneratedDocument12]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.G1
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.G1
 DItemRevisionGUID=
 
 [GeneratedDocument13]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.G2
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.G2
 DItemRevisionGUID=
 
 [GeneratedDocument14]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.G2
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.G2
 DItemRevisionGUID=
 
 [GeneratedDocument15]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GBL
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument16]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GBL
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument17]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GBO
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument18]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GBO
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument19]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GBP
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GBP
 DItemRevisionGUID=
 
 [GeneratedDocument20]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GBP
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GBP
 DItemRevisionGUID=
 
 [GeneratedDocument21]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GBR1
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GBR1
 DItemRevisionGUID=
 
 [GeneratedDocument22]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GBR2
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GBR2
 DItemRevisionGUID=
 
 [GeneratedDocument23]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GBS
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument24]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GBS
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument25]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GM
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GM
 DItemRevisionGUID=
 
 [GeneratedDocument26]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GM
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GM
 DItemRevisionGUID=
 
 [GeneratedDocument27]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GM1
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GM1
 DItemRevisionGUID=
 
 [GeneratedDocument28]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GM1
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GM1
 DItemRevisionGUID=
 
 [GeneratedDocument29]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GTL
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument30]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GTL
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument31]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GTO
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GTO
 DItemRevisionGUID=
 
 [GeneratedDocument32]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GTO
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GTO
 DItemRevisionGUID=
 
 [GeneratedDocument33]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GTP
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GTP
 DItemRevisionGUID=
 
 [GeneratedDocument34]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GTP
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GTP
 DItemRevisionGUID=
 
 [GeneratedDocument35]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.GTS
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.GTS
 DItemRevisionGUID=
 
 [GeneratedDocument36]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.GTS
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.GTS
 DItemRevisionGUID=
 
 [GeneratedDocument37]
-DocumentPath=Project Outputs for Low_Cost_EEG\NC Drill Files\EEG_PCB.LDP
+DocumentPath=Project Outputs for DIY-EEG\NC Drill Files\EEG_PCB.LDP
 DItemRevisionGUID=
 
 [GeneratedDocument38]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber Files\EEG_PCB.REP
+DocumentPath=Project Outputs for DIY-EEG\Gerber Files\EEG_PCB.REP
 DItemRevisionGUID=
 
 [GeneratedDocument39]
-DocumentPath=Project Outputs for Low_Cost_EEG\Gerber X2 Files\EEG_PCB.REP
+DocumentPath=Project Outputs for DIY-EEG\Gerber X2 Files\EEG_PCB.REP
 DItemRevisionGUID=
 
 [GeneratedDocument40]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\EEG_PCB.REP
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\EEG_PCB.REP
 DItemRevisionGUID=
 
 [GeneratedDocument41]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\bottom_layer\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\bottom_layer\features
 DItemRevisionGUID=
 
 [GeneratedDocument42]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\bottom_overlay\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\bottom_overlay\features
 DItemRevisionGUID=
 
 [GeneratedDocument43]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\bottom_paste\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\bottom_paste\features
 DItemRevisionGUID=
 
 [GeneratedDocument44]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\bottom_solder\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\bottom_solder\features
 DItemRevisionGUID=
 
 [GeneratedDocument45]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\comp_+_bot\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\comp_+_bot\features
 DItemRevisionGUID=
 
 [GeneratedDocument46]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\comp_+_top\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\comp_+_top\features
 DItemRevisionGUID=
 
 [GeneratedDocument47]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\dielectric_1\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\dielectric_1\features
 DItemRevisionGUID=
 
 [GeneratedDocument48]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\dielectric_2\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\dielectric_2\features
 DItemRevisionGUID=
 
 [GeneratedDocument49]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\dielectric_3\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\dielectric_3\features
 DItemRevisionGUID=
 
 [GeneratedDocument50]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\drill_non-plated_bottom_layer-top_layer\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\drill_non-plated_bottom_layer-top_layer\features
 DItemRevisionGUID=
 
 [GeneratedDocument51]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\drill_plated_bottom_layer-top_layer\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\drill_plated_bottom_layer-top_layer\features
 DItemRevisionGUID=
 
 [GeneratedDocument52]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\gnd_layer\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\gnd_layer\features
 DItemRevisionGUID=
 
 [GeneratedDocument53]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\power_layer\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\power_layer\features
 DItemRevisionGUID=
 
 [GeneratedDocument54]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\top_layer\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\top_layer\features
 DItemRevisionGUID=
 
 [GeneratedDocument55]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\top_overlay\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\top_overlay\features
 DItemRevisionGUID=
 
 [GeneratedDocument56]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\top_paste\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\top_paste\features
 DItemRevisionGUID=
 
 [GeneratedDocument57]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\top_solder\features
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\top_solder\features
 DItemRevisionGUID=
 
 [GeneratedDocument58]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\matrix\matrix
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\matrix\matrix
 DItemRevisionGUID=
 
 [GeneratedDocument59]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\netlists\cadnet\netlist
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\netlists\cadnet\netlist
 DItemRevisionGUID=
 
 [GeneratedDocument60]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\profile
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\profile
 DItemRevisionGUID=
 
 [GeneratedDocument61]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\stephdr
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\stephdr
 DItemRevisionGUID=
 
 [GeneratedDocument62]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\drill_non-plated_bottom_layer-top_layer\tools
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\drill_non-plated_bottom_layer-top_layer\tools
 DItemRevisionGUID=
 
 [GeneratedDocument63]
-DocumentPath=Project Outputs for Low_Cost_EEG\ODB++ Files\odb\steps\pcb\layers\drill_plated_bottom_layer-top_layer\tools
+DocumentPath=Project Outputs for DIY-EEG\ODB++ Files\odb\steps\pcb\layers\drill_plated_bottom_layer-top_layer\tools
 DItemRevisionGUID=
 
 [Configuration1]
