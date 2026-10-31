@@ -41,16 +41,17 @@ The included firmware is a PlatformIO project. Follow [the macOS firmware guide]
 
 ## Install
 
-Python 3.10 or newer is required.
+One-time setup is in [Documentation/INSTALL.md](Documentation/INSTALL.md). Use Python 3.11, 3.12, or 3.13. The pinned `bleak` release does not install on Python 3.14 or 3.15.
+
+## Watch the live signal
+
+With the receiver already running, start the viewer:
 
 ```zsh
-git clone https://github.com/agteo/diy-eeg-mac.git
-cd diy-eeg-mac
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e '.[dev]'
+mne-lsl viewer -s Custom_ESP32_EEG
 ```
+
+The full session steps are in [Documentation/VISUALIZE.md](Documentation/VISUALIZE.md).
 
 ## Record an alpha session
 
