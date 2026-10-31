@@ -9,8 +9,8 @@ This repository incorporates GPL-3.0 material from [Xavier Asghar's Low-Cost-EEG
 Included:
 
 - Upstream hardware design files in [`Hardware`](Hardware)
-- Gerbers, drill files, enclosure STLs, BOM, and schematic/layout PDF in [`Production_Files`](Production_Files)
-- Upstream reference PDFs in [`Documentation`](Documentation), with a Mac usage guide
+- Gerbers, drill files, enclosure STLs, and BOM in [`Production_Files`](Production_Files). The schematic-and-layout PDF is not republished here
+- Mac usage notes in [`Documentation`](Documentation). Xavier Asghar's report, user guide, and poster are not republished here
 - The upstream PlatformIO firmware project in [`Software/Firmware_Platformio_Project`](Software/Firmware_Platformio_Project)
 - BLE receiver that publishes an eight-channel `Custom_ESP32_EEG` LSL stream at 500 Hz
 - Alpha eyes-open / eyes-closed LSL marker session
@@ -51,7 +51,7 @@ With the receiver already running, start the viewer:
 mne-lsl viewer -s Custom_ESP32_EEG
 ```
 
-The full session steps are in [Documentation/VISUALIZE.md](Documentation/VISUALIZE.md).
+The session steps and the Scope settings controls are in [Documentation/VISUALIZE.md](Documentation/VISUALIZE.md).
 
 ## Record an alpha session
 

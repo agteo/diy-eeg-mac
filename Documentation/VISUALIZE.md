@@ -26,7 +26,28 @@ source .venv/bin/activate
 mne-lsl viewer -s Custom_ESP32_EEG
 ```
 
-That is the command that opens the live view. The receiver in Terminal 1 has to stay connected. Close the viewer window to stop it. `Ctrl-C` in Terminal 1 stops the receiver.
+That command opens two windows. **Scope settings** is the control panel. The scrolling traces are in the plot window, which opens to its right. If you only see the numbers 0–7, look beside or behind Scope settings for the plot.
+
+The receiver in Terminal 1 has to stay connected. Close the Scope settings window to stop the viewer. `Ctrl-C` in that terminal interrupts it less cleanly. `Ctrl-C` in Terminal 1 stops the receiver.
+
+These controls change the display only. A LabRecorder file still contains the unfiltered stream.
+
+## Scope settings
+
+The numbers `0`–`7` are the eight board channels. This stream has no electrode names, so the viewer uses those indexes. On the resistor dummy, `0` is O1, `1` is Oz, `2` is O2, and `3` is POz. Channels `4`–`7` are not wired.
+
+Highlighted cells are the ones drawn on the plot. Click one cell to show only that channel. Hold Command and click to add or remove channels. Shift-click selects a range. For the dummy head, select `0` through `3` only.
+
+| Control | What to do |
+| --- | --- |
+| Scale | Vertical range in microvolts. `1e2` means 100 µV per channel. Scroll on the plot window to change it. If a trace is pinned to the top or bottom, pick a larger scale (`1e3`, `1e4`). If it looks like a flat line in the middle, pick a smaller one (`1e1`, `1e0`). |
+| Time (s) | Seconds visible across the plot. The default is 10. The maximum is 30. |
+| CAR | Common average reference. It subtracts the average of the selected channels from each of them. Leave it off for the dummy head, because unwired channels pull that average around. |
+| Detrend | Subtracts a running average so a trace sits nearer zero. Leave it off unless a channel has a large offset. |
+| Bandpass Filter | Shows only the frequencies between the two boxes, in hertz. `1.00` to `40.00` is a useful starting display. The low value must stay at least 1 Hz below the high value. |
+| Show LPT events | Draws hardware trigger marks. This board does not send a trigger channel, so leave it off. |
+
+A startup warning that the channel description could not be read is expected. The viewer then labels the channels `0`–`7` and continues.
 
 ## If the receiver keeps printing “Not found”
 

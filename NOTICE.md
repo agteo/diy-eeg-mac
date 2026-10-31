@@ -6,8 +6,9 @@ Imported upstream material (preserved unmodified except for the added macOS guid
 
 - `Hardware/`
 - `Production_Files/`
-- `Documentation/`
 - `Software/Firmware_Platformio_Project/`
+
+Xavier Asghar's original documents are not redistributed in this repository. That includes `Documentation/Final_Report.pdf`, `Documentation/User_Guide.pdf`, `Documentation/Poster.pdf`, and the schematic-and-layout PDFs under `Hardware/` and `Production_Files/`. Those files may exist in a local checkout and are listed in `.gitignore`. The published copies remain in [Low-Cost-EEG](https://github.com/XavierAsghar/Low-Cost-EEG).
 
 Repository-specific material:
 

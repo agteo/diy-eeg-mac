@@ -4,3 +4,10 @@ __pycache__/
 *.xdf
 .DS_Store
 .pytest_cache/
+
+# Xavier Asghar's original documents. Kept locally, not published.
+Documentation/Final_Report.pdf
+Documentation/Poster.pdf
+Documentation/User_Guide.pdf
+Hardware/PCB_Altium_Project/Project Outputs for Low_Cost_EEG/Schematic_and_Layout.pdf
+Production_Files/PCB Schematic and Layout.pdf

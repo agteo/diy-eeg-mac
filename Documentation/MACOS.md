@@ -1,12 +1,8 @@
 # Using the documentation on macOS
 
-The PDFs in this directory are retained as upstream reference material and are not modified here:
+Xavier Asghar's original report, user guide, and poster are not part of this repository. Read them in [Low-Cost-EEG](https://github.com/XavierAsghar/Low-Cost-EEG). Local copies, if you have them, stay in this folder and are gitignored.
 
-- `Final_Report.pdf` - original design rationale and validation context
-- `User_Guide.pdf` - original assembly and usage guide
-- `Poster.pdf` - project overview
-
-Use the upstream material for the hardware design and the macOS-specific files in this repository for the host computer workflow:
+Use that upstream material for the hardware design, and the macOS-specific files in this repository for the host computer workflow:
 
 - [Root README](../README.md) for the overall route
 - [`Software/Firmware_Platformio_Project/MACOS.md`](../Software/Firmware_Platformio_Project/MACOS.md) for firmware flashing on a Mac
