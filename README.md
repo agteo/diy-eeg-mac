@@ -31,7 +31,11 @@ This software is for educational, non-medical work. When electrodes are attached
 
 ## Hardware and fabrication
 
-Use [`Production_Files`](Production_Files) for fabrication: Gerber/NC drill data for the PCB, STL files for the enclosure, and the BOM. These manufacturing outputs are platform-neutral. See [production notes](Production_Files/MACOS_NOTES.md) before ordering. The schematic-and-layout PDF is not in this repository.
+To order the DIY-EEG board, use [`Manufacturing/JLCPCB`](Manufacturing/JLCPCB): the drill-aligned fabrication zip, the JLCPCB BOM and CPL, and [`ORDER_NOTES.md`](Manufacturing/JLCPCB/ORDER_NOTES.md) from a real October 2026 order.
+
+`Production_Files/NC Drill` and `Hardware/PCB_Altium_Project/Project Outputs for Low_Cost_EEG/NC Drill Files` are offset by about +60.4 mm in X and +50.4 mm in Y from the Gerbers. Do not upload those drill files as they are.
+
+Enclosure STLs and the other fabrication outputs are in [`Production_Files`](Production_Files). See [production notes](Production_Files/MACOS_NOTES.md). The schematic-and-layout PDF is not in this repository.
 
 The editable PCB project is Altium Designer source. Altium is not natively available on macOS, so use the supplied fabrication outputs on a Mac. Edit the source on Windows if a later revision needs it.
 
