@@ -55,7 +55,7 @@ With the receiver already running, start the viewer:
 mne-lsl viewer -s Custom_ESP32_EEG
 ```
 
-The session steps and the Scope settings controls are in [Documentation/VISUALIZE.md](Documentation/VISUALIZE.md).
+The session steps and the Scope settings controls are in [Documentation/VISUALIZE.md](Documentation/VISUALIZE.md). Setup sheets and a live viewer capture are in [Documentation/FIGURES.md](Documentation/FIGURES.md).
 
 ## Record an alpha session
 
