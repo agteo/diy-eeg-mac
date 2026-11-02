@@ -37,7 +37,15 @@ To order the DIY-EEG board, use [`Manufacturing/JLCPCB`](Manufacturing/JLCPCB): 
 
 Enclosure STLs and the other fabrication outputs are in [`Production_Files`](Production_Files). See [production notes](Production_Files/MACOS_NOTES.md). The schematic-and-layout PDF is not in this repository.
 
-The editable PCB project is Altium Designer source. Altium is not natively available on macOS, so use the supplied fabrication outputs on a Mac. Edit the source on Windows if a later revision needs it.
+Altium Designer, which edits the board, runs on Windows only. A Mac can still order and check this board, because the fabrication files are already exported.
+
+On a Mac:
+
+- Order from [`Manufacturing/JLCPCB`](Manufacturing/JLCPCB). That zip has the drill files aligned to the Gerbers. Do not upload `Production_Files/NC Drill` or `Hardware/PCB_Altium_Project/Project Outputs for DIY-EEG/NC Drill Files` as they are. Those holes are offset by about +60.4 mm in X and +50.4 mm in Y.
+- Open the Gerbers in JLCPCB's viewer, or on the Mac with `gerbv` (`brew install gerbv`) or KiCad's GerbView. Confirm the holes sit on the pads before you pay.
+- Print the enclosure from the STL files in [`Production_Files`](Production_Files) with any Mac slicer.
+
+Changing the schematic or the layout still needs Altium on Windows. After exporting new fabrication files, set the drill output to the same origin as the Gerbers, then check the holes in a Gerber viewer.
 
 ## Firmware on macOS
 
@@ -81,4 +89,4 @@ Use `diy-eeg-alpha --phase-duration 5` for a short dry run.
 
 ## License
 
-This repository is licensed under [GNU GPL v3.0](LICENSE). See [NOTICE.md](NOTICE.md).
+This repository is licensed under [GNU GPL v3.0](LICENSE).
