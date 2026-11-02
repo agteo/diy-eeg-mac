@@ -65,27 +65,38 @@ mne-lsl viewer -s Custom_ESP32_EEG
 
 The session steps and the Scope settings controls are in [Documentation/VISUALIZE.md](Documentation/VISUALIZE.md). Setup sheets and a live viewer capture are in [Documentation/FIGURES.md](Documentation/FIGURES.md).
 
-## Record an alpha session
+## Berger test
 
-Run the receiver in one Terminal window:
+This is the eyes-open / eyes-closed alpha session. Posterior alpha (about 8–12 Hz) should rise with the eyes closed and fall when they open. A closed/open ratio clearly above 1 on an occipital channel is the Berger effect. The file always contains eight channels, numbered 0–7. Read the ones that have electrodes. An open input sits at the converter limit and has no rhythm.
+
+Run the receiver in one Terminal window, from the repository root:
 
 ```zsh
+source .venv/bin/activate
 diy-eeg-receiver
 ```
 
-In another, start LabRecorder. Set the study root to `recordings/` in this repo, select `Custom_ESP32_EEG` and `AlphaMarkers`, begin recording, then run:
+In another, with the same environment:
 
 ```zsh
 diy-eeg-alpha
 ```
 
-After saving the XDF recording:
+Press Enter when asked. Each phase lasts 20 seconds. The session writes `recordings/alpha-<timestamp>.xdf` and a channel-0 summary in `recordings/alpha-<timestamp>.txt` when it finishes. `diy-eeg-alpha --phase-duration 5` is a short dry run.
+
+Sit still, with electrodes on the back of the head. The terminal names each phase, and a sound marks the start:
+
+1. **Eyes open.** One glass sound. Stare at a fixed point. Blink only if you have to. Stay there until the next sound.
+2. **Eyes closed.** Two pings. Close your eyes without squeezing, and keep your face and neck still. Stay there until the next sound.
+3. **Eyes open.** One glass sound. Open your eyes and stare at the same point. Stay there until the low sound.
+
+The low sound means the files are saved. The summary prints the 8–12 Hz level for each phase and the eyes-closed / eyes-open ratio. Plot one channel with:
 
 ```zsh
-diy-eeg-analyze-alpha /absolute/path/to/recording.xdf --channel 0
+diy-eeg-analyze-alpha recordings/alpha-<timestamp>.xdf --channel 0
 ```
 
-Use `diy-eeg-alpha --phase-duration 5` for a short dry run.
+The top trace is the raw channel, including the electrode offset. The bottom trace is the 8–12 Hz band. Pass `--channel` with another index, from 0 through 7, to plot a different input. The saved text summary is channel 0.
 
 ## License
 
