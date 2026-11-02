@@ -2,7 +2,7 @@
 
 macOS host tools for an eight-channel ADS1299/ESP32-S3 EEG device. The repository includes the hardware, manufacturing files, firmware, and a BLE-to-LSL workflow.
 
-Hardware and firmware design by Xavier Asghar.
+Hardware and firmware design by [Xavier Asghar](https://github.com/XavierAsghar/Low-Cost-EEG).
 
 ## Scope and current status
 
