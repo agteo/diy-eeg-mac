@@ -1,6 +1,6 @@
 # Firmware workflow on macOS
 
-This is the upstream ESP32-S3 PlatformIO project. The project configuration targets `esp32-s3-devkitc-1`, uses Arduino, and configures 8 MB flash plus PSRAM.
+This is the ESP32-S3 PlatformIO project. The project configuration targets `esp32-s3-devkitc-1`, uses Arduino, and configures 8 MB flash plus PSRAM.
 
 ## Install PlatformIO
 

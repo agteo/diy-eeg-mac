@@ -1,6 +1,6 @@
-# Hardware (upstream Altium project)
+# Hardware
 
-This folder is Xavier Asghar's upstream Altium Designer project. It is unmodified, except that the schematic-and-layout PDF is not republished (see NOTICE.md). It is the editable design source. Altium is Windows-only.
+This folder is the Altium Designer project for the board. It is the editable design source. Altium is Windows-only. The schematic-and-layout PDF is not included.
 
 **Do not upload `PCB_Altium_Project/Project Outputs for DIY-EEG/` to a fab as is.** The NC drill files in that folder (`NC Drill Files/EEG_PCB-RoundHoles.TXT` and `-SlotHoles.TXT`) use a different origin from the Gerbers. Every hole is offset by about +60.4 mm in X and +50.4 mm in Y, so the holes land off the board. The same applies to `Production_Files/NC Drill/`.
 
