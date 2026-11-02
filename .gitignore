@@ -7,7 +7,7 @@ recordings/*
 .DS_Store
 .pytest_cache/
 
-# Xavier Asghar's original documents. Kept locally, not published.
+# Local PDFs that are not part of this repository.
 Documentation/Final_Report.pdf
 Documentation/Poster.pdf
 Documentation/User_Guide.pdf

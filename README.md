@@ -1,17 +1,17 @@
 # DIY EEG Mac
 
-macOS host tools for an eight-channel ADS1299/ESP32-S3 EEG device. The repository includes the upstream hardware and manufacturing files and a BLE-to-LSL workflow.
+macOS host tools for an eight-channel ADS1299/ESP32-S3 EEG device. The repository includes the hardware, manufacturing files, firmware, and a BLE-to-LSL workflow.
 
-This repository incorporates GPL-3.0 material from [Xavier Asghar's Low-Cost-EEG project](https://github.com/XavierAsghar/Low-Cost-EEG). The hardware, enclosure, manufacturing outputs, original firmware, and reference PDFs remain upstream work; this repository adds macOS host tools and Mac-oriented setup notes. It is not affiliated with, or an official port of, the upstream project.
+Hardware and firmware design by Xavier Asghar.
 
 ## Scope and current status
 
 Included:
 
-- Upstream hardware design files in [`Hardware`](Hardware)
-- Gerbers, drill files, enclosure STLs, and BOM in [`Production_Files`](Production_Files). The schematic-and-layout PDF is not republished here
-- Mac usage notes in [`Documentation`](Documentation). Xavier Asghar's report, user guide, and poster are not republished here
-- The upstream PlatformIO firmware project in [`Software/Firmware_Platformio_Project`](Software/Firmware_Platformio_Project)
+- Hardware design files in [`Hardware`](Hardware)
+- Gerbers, drill files, enclosure STLs, and BOM in [`Production_Files`](Production_Files)
+- Mac usage notes in [`Documentation`](Documentation)
+- The PlatformIO firmware project in [`Software/Firmware_Platformio_Project`](Software/Firmware_Platformio_Project)
 - BLE receiver that publishes an eight-channel `Custom_ESP32_EEG` LSL stream at 500 Hz
 - Alpha eyes-open / eyes-closed LSL marker session
 - XDF alpha-band plotter
@@ -81,4 +81,4 @@ Use `diy-eeg-alpha --phase-duration 5` for a short dry run.
 
 ## License
 
-This repository is licensed under [GNU GPL v3.0](LICENSE). The imported upstream materials retain their original notices. See [NOTICE.md](NOTICE.md) for provenance and modification boundaries.
+This repository is licensed under [GNU GPL v3.0](LICENSE). See [NOTICE.md](NOTICE.md).
