@@ -100,6 +100,14 @@ diy-eeg-analyze-alpha recordings/alpha-<timestamp>.xdf --channel 0
 
 The top trace is the raw channel, including the electrode offset. The bottom trace is the 8–12 Hz band. Pass `--channel` with another index, from 0 through 7, to plot a different input. The saved text summary is channel 0.
 
+To see the Berger effect as a spectrum, save an eyes-open vs eyes-closed power spectrum for one channel:
+
+```zsh
+diy-eeg-alpha-spectrum recordings/alpha-<timestamp>.xdf --channel 0 --label O1
+```
+
+It writes `recordings/alpha-<timestamp>-spectrum-ch0.png`, with the 8–12 Hz band shaded, and prints the eyes-closed alpha peak. The eyes-open line is the mean of both eyes-open phases. Use `--out` to choose the file name and `--fmax` to change the frequency range (default 30 Hz). An example from a real session is in [this lab note](https://alexteo.com/blog/berger-test-diy-eeg-2026-11-01.html).
+
 ## License
 
 This repository is licensed under [GNU GPL v3.0](LICENSE).

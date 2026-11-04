@@ -25,6 +25,7 @@ dev = ["pytest>=8,<9"]
 diy-eeg-receiver = "diy_eeg_mac.receiver:main"
 diy-eeg-alpha = "diy_eeg_mac.alpha:main"
 diy-eeg-analyze-alpha = "diy_eeg_mac.analyze_alpha:main"
+diy-eeg-alpha-spectrum = "diy_eeg_mac.alpha_spectrum:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
