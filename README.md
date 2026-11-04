@@ -2,6 +2,8 @@
 
 macOS host tools for an eight-channel ADS1299/ESP32-S3 EEG device. The repository includes the hardware, manufacturing files, firmware, and a BLE-to-LSL workflow.
 
+Built and maintained by [Alex Teo](https://alexteo.com/things-im-building.html) ([@agteo](https://github.com/agteo)): macOS host tools, the BLE-to-LSL receiver, the alpha test, and the documentation. First result: [eyes-open / eyes-closed alpha test, 1 Nov 2026](https://alexteo.com/blog/berger-test-diy-eeg-2026-11-01.html).
+
 Hardware and firmware design by [Xavier Asghar](https://github.com/XavierAsghar/Low-Cost-EEG).
 
 ## Scope and current status
