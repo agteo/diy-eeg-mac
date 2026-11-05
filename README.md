@@ -18,7 +18,7 @@ Included:
 - Alpha eyes-open / eyes-closed LSL marker session
 - Daily Berger runner with an optional serial-7 block, a session log, and `recordings/index.csv`
 - XDF alpha-band plotter
-- Unit tests for the binary BLE-frame decoder
+- Unit tests for the binary BLE-frame decoder, including sample loss separate from notification arrival spacing
 
 Not included or validated:
 
@@ -26,7 +26,7 @@ Not included or validated:
 - P300 and other latency-sensitive experiments
 - Hardware-timestamped stimulus synchronisation
 
-The target device sends eight samples in each BLE notification and does not supply a hardware event timestamp. Treat P300 timing and similar latency-sensitive measurements as unvalidated until measured on your assembled setup.
+The target device sends eight samples in each BLE notification and does not supply a hardware event timestamp. At 500 Hz those notifications are expected about every 16 ms. A gap in the frame sequence means those samples never arrived. The receiver counts that gap and publishes NaN placeholders for the missing samples. Spacing between notifications is a separate check: they can reach the Mac late or bunched together while the sequence is still complete. The sequence number is a single byte, so a gap of exactly 256 samples looks like no gap. Treat P300 timing and similar latency-sensitive measurements as unvalidated until measured on your assembled setup.
 
 ## Safety
 

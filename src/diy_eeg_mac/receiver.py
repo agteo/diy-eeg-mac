@@ -11,11 +11,11 @@ import math
 from bleak import BleakClient, BleakScanner
 from pylsl import StreamInfo, StreamOutlet
 
-from .protocol import CHANNELS, decode
+from .protocol import CHANNELS, SAMPLE_RATE_HZ, decode, gaps_before_frames
 
 DEFAULT_NAME = "ESP32_EEG_DATA"
 CHARACTERISTIC_UUID = "cba1d466-344c-4be3-ab3f-189f80dd7518"
-SAMPLE_RATE = 500.0
+SAMPLE_RATE = SAMPLE_RATE_HZ
 
 
 async def discover(name: str, address: str | None, timeout: float):
@@ -44,14 +44,15 @@ async def receive(name: str, address: str | None, scan_timeout: float) -> None:
     async def publish() -> None:
         nonlocal expected_sequence, dropped
         while True:
-            for frame in decode(await samples.get()):
-                if expected_sequence is not None:
-                    missing = (frame.sequence - expected_sequence) % 256
-                    if missing:
-                        dropped += missing
-                        stream.push_chunk([[math.nan] * CHANNELS for _ in range(missing)])
-                        print(f"Detected {missing} missing samples (total: {dropped}).")
-                expected_sequence = (frame.sequence + 1) % 256
+            frames = decode(await samples.get())
+            gaps, expected_sequence = gaps_before_frames(
+                expected_sequence, tuple(frame.sequence for frame in frames)
+            )
+            for frame, missing in zip(frames, gaps, strict=True):
+                if missing:
+                    dropped += missing
+                    stream.push_chunk([[math.nan] * CHANNELS for _ in range(missing)])
+                    print(f"Detected {missing} missing samples (total: {dropped}).")
                 stream.push_sample(frame.microvolts)
 
     publisher = asyncio.create_task(publish())
