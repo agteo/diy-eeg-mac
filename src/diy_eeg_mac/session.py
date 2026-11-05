@@ -46,10 +46,11 @@ INDEX_COLUMNS = [
 _PLAIN = re.compile(r"^[A-Za-z0-9_./+-]+$")
 
 
-def prompt_session(task: str | None, input_fn=input) -> dict:
-    """Ask for the context around this recording. ``task`` skips the serial-7 question."""
+def prompt_context(input_fn=input) -> dict:
+    """Ask for the context around a recording that has already been saved."""
+    print("\nRecording saved. A few questions about this sitting.")
     print("Montage: channel 0 O1, 1 Oz, 2 O2, 3 POz. Bias Fpz. Reference left earlobe.")
-    confirmed = _yes(input_fn, "Is that how this session is wired?", default_yes=True)
+    confirmed = _yes(input_fn, "Is that how this session was wired?", default_yes=True)
     montage_note = "" if confirmed else _required_text(input_fn, "What is different? ")
     hours = _required_float(input_fn, "Hours since wake: ", 0, 24)
     sleep_hours = _required_float(input_fn, "Sleep hours last night: ", 0, 16)
@@ -61,22 +62,10 @@ def prompt_session(task: str | None, input_fn=input) -> dict:
     pair_id = _line(input_fn, "Pair id (empty if this run stands alone): ") or None
     drowsy = _choice(input_fn, "Drowsy, 1 (awake) to 5: ", ("1", "2", "3", "4", "5"))
     paste = _choice(input_fn, f"Paste ({', '.join(PASTES)}): ", PASTES)
-    if task is None:
-        task = "serial7" if _yes(input_fn, "Add the serial-7 block after Berger?", default_yes=False) else "none"
-    if task not in ("serial7", "none"):
-        raise SystemExit("Task must be serial7 or none.")
-    live = _yes(input_fn, "Is O1 a live trace in the viewer, not pinned to the top or bottom?", default_yes=True)
-    qc = "pass"
-    if not live:
-        record = _yes(input_fn, "Record anyway and mark this session qc fail?", default_yes=False)
-        if not record:
-            raise SystemExit("No recording. Fix O1, then run diy-eeg-daily again.")
-        qc = "fail"
     anomalies = _line(input_fn, "Anything to note? (empty if nothing): ")
     if montage_note:
         anomalies = f"{montage_note}; {anomalies}".strip("; ")
     return {
-        "task": task,
         "montage_confirmed": confirmed,
         "hours_since_wake": hours,
         "sleep_hours": sleep_hours,
@@ -86,7 +75,6 @@ def prompt_session(task: str | None, input_fn=input) -> dict:
         "pair_id": pair_id,
         "drowsy_1_to_5": drowsy,
         "paste": paste,
-        "qc": qc,
         "anomalies": anomalies,
     }
 
@@ -148,23 +136,41 @@ def write_session(path: Path, data: dict) -> None:
     path.write_text(dump_session(data))
 
 
+def _read_index(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        if reader.fieldnames != INDEX_COLUMNS:
+            raise SystemExit(
+                f"{path} has a different header from this version of diy-eeg-daily. "
+                "Leave that file in place and record into another directory."
+            )
+        return list(reader)
+
+
 def append_index(path: Path, row: dict) -> None:
     """Append one session. The header is written once and then left alone."""
     path.parent.mkdir(parents=True, exist_ok=True)
     new_file = not path.exists() or path.stat().st_size == 0
     if not new_file:
-        with path.open(newline="") as handle:
-            header = next(csv.reader(handle), [])
-        if header != INDEX_COLUMNS:
-            raise SystemExit(
-                f"{path} has a different header from this version of diy-eeg-daily. "
-                "Leave that file in place and record into another directory."
-            )
+        _read_index(path)
     with path.open("a", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=INDEX_COLUMNS)
         if new_file:
             writer.writeheader()
         writer.writerow({key: _csv_value(row.get(key)) for key in INDEX_COLUMNS})
+
+
+def upsert_index(path: Path, row: dict) -> None:
+    """Insert a session row, replacing any earlier row for the same XDF."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    stored = {key: _csv_value(row.get(key)) for key in INDEX_COLUMNS}
+    rows = _read_index(path) if path.exists() and path.stat().st_size else []
+    rows = [existing for existing in rows if existing.get("xdf") != stored["xdf"]]
+    rows.append(stored)
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=INDEX_COLUMNS)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def index_row(document: dict) -> dict:

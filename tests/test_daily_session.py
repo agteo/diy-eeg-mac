@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 
 from diy_eeg_mac.alpha import channel_metrics, daily_phases
-from diy_eeg_mac.session import append_index, dump_session, index_row, prompt_session, session_document
+from diy_eeg_mac.session import append_index, dump_session, index_row, prompt_context, session_document
 
 
 def _answers(*lines: str):
@@ -77,19 +77,11 @@ class ScoreTests(unittest.TestCase):
 
 
 class SessionLogTests(unittest.TestCase):
-    def test_prompt_decline_records_nothing(self) -> None:
-        with self.assertRaises(SystemExit):
-            prompt_session(
-                "none",
-                _answers("", "1", "8", "0", "", "", "1", "fresh", "n", "n"),
-            )
-
     def test_yaml_and_index_round_trip(self) -> None:
-        context = prompt_session(
-            "serial7",
-            _answers("", "1.5", "6.5", "80", "40", "", "coffee-1", "2", "fresh", "", "blinked once"),
+        context = prompt_context(
+            _answers("", "1.5", "6.5", "80", "40", "", "coffee-1", "2", "fresh", "blinked once"),
         )
-        self.assertEqual(context["task"], "serial7")
+        context["qc"] = "pass"
         self.assertEqual(context["caffeine_mg"], 80)
         document = session_document(
             context,

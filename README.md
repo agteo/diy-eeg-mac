@@ -93,13 +93,13 @@ Sit still, with electrodes on the back of the head. The terminal names each phas
 2. **Eyes closed.** Two pings. Close your eyes without squeezing, and keep your face and neck still. Stay there until the next sound.
 3. **Eyes open.** One glass sound. Open your eyes and stare at the same point. Stay there until the low sound.
 
-The low sound means the files are saved. The summary prints the 8–12 Hz level for each phase and the eyes-closed / eyes-open ratio. Plot one channel with:
+The low sound means the EEG is saved. The summary prints the 8–12 Hz level for each phase on every channel, and the eyes-closed / eyes-open ratio. An input that never moves is reported as not moving. The script then asks about sleep, caffeine, exercise, and paste, and writes those answers beside the recording. Whether O1 moved is taken from the recording. Plot one channel with:
 
 ```zsh
 diy-eeg-analyze-alpha recordings/alpha-<timestamp>.xdf --channel 0
 ```
 
-The top trace is the raw channel, including the electrode offset. The bottom trace is the 8–12 Hz band. Pass `--channel` with another index, from 0 through 7, to plot a different input. The saved text summary is channel 0.
+The top trace is the raw channel, including the electrode offset. The bottom trace is the 8–12 Hz band. Pass `--channel` with another index, from 0 through 7, to plot a different input. The saved text summary lists all eight channels.
 
 To see the Berger effect as a spectrum, save an eyes-open vs eyes-closed power spectrum for one channel:
 
@@ -119,7 +119,7 @@ With the receiver already running:
 diy-eeg-daily
 ```
 
-The script asks for sleep, caffeine, exercise, paste, and whether O1 is a live trace. It then runs:
+The questions about sleep, caffeine, exercise, and paste come after the low sound, once the EEG is already saved. Whether O1 moved is read from the recording. The blocks are:
 
 1. **Settle, 5 seconds.** No sound. Sit still, eyes open.
 2. **Eyes open, 60 seconds.** One glass sound. Stare at a fixed mark.
@@ -140,7 +140,11 @@ Each run writes three files and appends one row to the index:
 - `recordings/alpha-<timestamp>.yaml` — the answers from the start of the session
 - `recordings/index.csv` — one row per session
 
-`diy-eeg-daily --phase-duration 5` is a short recording. `diy-eeg-daily --rehearse` plays the sounds and writes nothing, so you can learn the cues before wearing the cap. `diy-eeg-daily --task none` skips the serial-7 question and records Berger only.
+`diy-eeg-daily --phase-duration 5` is a short recording. `diy-eeg-daily --rehearse` plays the sounds and writes nothing, so you can learn the cues before wearing the cap. `diy-eeg-daily --task serial7` adds the subtraction blocks. To attach the same questions to a recording that was saved without them:
+
+```zsh
+diy-eeg-daily --annotate recordings/alpha-<timestamp>.xdf
+```
 
 A caffeine or exercise day is the same command twice. Use the same pair id on both runs, and fill in the minutes-since questions on the second one. Leave a session marked `qc: fail` out of plots. The XDF is still kept.
 
