@@ -16,6 +16,7 @@ Included:
 - The PlatformIO firmware project in [`Software/Firmware_Platformio_Project`](Software/Firmware_Platformio_Project)
 - BLE receiver that publishes an eight-channel `Custom_ESP32_EEG` LSL stream at 500 Hz
 - Alpha eyes-open / eyes-closed LSL marker session
+- Daily Berger runner with an optional serial-7 block, a session log, and `recordings/index.csv`
 - XDF alpha-band plotter
 - Unit tests for the binary BLE-frame decoder
 
@@ -107,6 +108,41 @@ diy-eeg-alpha-spectrum recordings/alpha-<timestamp>.xdf --channel 0 --label O1
 ```
 
 It writes `recordings/alpha-<timestamp>-spectrum-ch0.png`, with the 8–12 Hz band shaded, and prints the eyes-closed alpha peak. The eyes-open line is the mean of both eyes-open phases. Use `--out` to choose the file name and `--fmax` to change the frequency range (default 30 Hz). An example from a real session is in [this lab note](https://alexteo.com/blog/berger-test-diy-eeg-2026-11-01.html).
+
+## Daily session
+
+`diy-eeg-daily` is the command to run on a repeated day. It uses the same receiver and the same marker stream as the Berger test. Each block starts with a sound, and the marker is written at that moment.
+
+With the receiver already running:
+
+```zsh
+diy-eeg-daily
+```
+
+The script asks for sleep, caffeine, exercise, paste, and whether O1 is a live trace. It then runs:
+
+1. **Settle, 5 seconds.** No sound. Sit still, eyes open.
+2. **Eyes open, 60 seconds.** One glass sound. Stare at a fixed mark.
+3. **Eyes closed, 60 seconds.** Two pings. Close on the first ping, without squeezing.
+4. **Eyes open, 60 seconds.** One glass sound. Stare at the same mark.
+
+Answer yes to the serial-7 question, or pass `--task serial7`, and two further blocks follow. The terminal prints a three-digit seed before they start.
+
+5. **Serial 7, 60 seconds.** Three pings. Eyes open. Subtract 7 from the seed, silently, until the next sound.
+6. **Eyes open, 30 seconds.** One glass sound. Stop calculating and stare at the mark.
+
+The low sound means the files are saved. Scoring leaves out the first 2 seconds of each block, so the cue itself is not in the ratio. The eyes-open level is the mean of the first two eyes-open blocks. A ratio clearly above 1 on O1 is the Berger check for that day.
+
+Each run writes three files and appends one row to the index:
+
+- `recordings/alpha-<timestamp>.xdf` — EEG and markers
+- `recordings/alpha-<timestamp>.txt` — O1, Oz, and O2 alpha levels
+- `recordings/alpha-<timestamp>.yaml` — the answers from the start of the session
+- `recordings/index.csv` — one row per session
+
+`diy-eeg-daily --phase-duration 5` is a short recording. `diy-eeg-daily --rehearse` plays the sounds and writes nothing, so you can learn the cues before wearing the cap. `diy-eeg-daily --task none` skips the serial-7 question and records Berger only.
+
+A caffeine or exercise day is the same command twice. Use the same pair id on both runs, and fill in the minutes-since questions on the second one. Leave a session marked `qc: fail` out of plots. The XDF is still kept.
 
 ## License
 
