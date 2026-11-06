@@ -42,6 +42,7 @@ INDEX_COLUMNS = [
     "peak_hz_oz",
     "peak_hz_o2",
     "task_ratio_o1",
+    "fz_theta_ratio",
     "anomalies",
 ]
 _PLAIN = re.compile(r"^[A-Za-z0-9_./+-]+$")
@@ -118,6 +119,7 @@ def session_document(
         "ratio": {name: metrics[name]["ratio"] for name in ("O1", "Oz", "O2") if name in metrics},
         "peak_hz": {name: metrics[name]["peak_hz"] for name in ("O1", "Oz", "O2") if name in metrics},
         "task_ratio": {name: metrics[name]["task_ratio"] for name in ("O1", "Oz", "O2") if name in metrics},
+        "fz_theta_ratio": context.get("fz_theta_ratio"),
     }
 
 
@@ -137,15 +139,34 @@ def write_session(path: Path, data: dict) -> None:
     path.write_text(dump_session(data))
 
 
-def _read_index(path: Path) -> list[dict[str, str]]:
+def read_index(path: Path) -> list[dict[str, str]]:
+    """Read the session index, adding any missing columns from this version."""
     with path.open(newline="") as handle:
         reader = csv.DictReader(handle)
-        if reader.fieldnames != INDEX_COLUMNS:
-            raise SystemExit(
-                f"{path} has a different header from this version of diy-eeg-daily. "
-                "Leave that file in place and record into another directory."
-            )
-        return list(reader)
+        fields = list(reader.fieldnames or [])
+        rows = [{key: (row.get(key) or "") for key in INDEX_COLUMNS} for row in reader]
+    if fields == INDEX_COLUMNS:
+        return rows
+    if fields and set(fields) <= set(INDEX_COLUMNS):
+        write_index(path, rows)
+        return rows
+    raise SystemExit(
+        f"{path} has a different header from this version of diy-eeg-daily. "
+        "Leave that file in place and record into another directory."
+    )
+
+
+def write_index(path: Path, rows: list[dict]) -> None:
+    """Rewrite the session index with the current columns."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=INDEX_COLUMNS)
+        writer.writeheader()
+        writer.writerows([{key: _csv_value(row.get(key)) for key in INDEX_COLUMNS} for row in rows])
+
+
+def _read_index(path: Path) -> list[dict[str, str]]:
+    return read_index(path)
 
 
 def append_index(path: Path, row: dict) -> None:
@@ -202,6 +223,7 @@ def index_row(document: dict) -> dict:
         "peak_hz_oz": peak.get("Oz"),
         "peak_hz_o2": peak.get("O2"),
         "task_ratio_o1": task.get("O1"),
+        "fz_theta_ratio": document.get("fz_theta_ratio"),
         "anomalies": document["anomalies"],
     }
 

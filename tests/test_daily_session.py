@@ -5,8 +5,9 @@ from pathlib import Path
 
 import numpy as np
 
-from diy_eeg_mac.alpha import channel_metrics, daily_phases, format_channel_summary
-from diy_eeg_mac.session import append_index, dump_session, index_row, prompt_context, session_document
+from diy_eeg_mac.alpha import channel_metrics, daily_phases, format_channel_summary, fz_theta_ratio
+from diy_eeg_mac.report import render_report
+from diy_eeg_mac.session import append_index, dump_session, index_row, prompt_context, read_index, session_document
 
 
 def _answers(*lines: str):
@@ -131,6 +132,88 @@ class SessionLogTests(unittest.TestCase):
         self.assertEqual(rows[0]["ratio_o1"], "1.8000")
         self.assertEqual(rows[0]["pair_id"], "coffee-1")
         self.assertEqual(rows[0]["anomalies"], "blinked once")
+        self.assertEqual(rows[0]["fz_theta_ratio"], "")
+
+    def test_old_index_gains_the_focus_column(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            index = Path(tmp) / "index.csv"
+            index.write_text(
+                "started,protocol,qc,xdf,phase_s,settle_s,hours_since_wake,sleep_hours,caffeine_mg,"
+                "minutes_since_caffeine,minutes_since_exercise,pair_id,drowsy_1_to_5,paste,"
+                "montage_confirmed,serial7_seed,ratio_o1,ratio_oz,ratio_o2,peak_hz_o1,peak_hz_oz,"
+                "peak_hz_o2,task_ratio_o1,anomalies\n"
+                "2026-11-06T16:09:16+08:00,berger,pass,alpha.xdf,60,5,8,5,100,120,,,2,fresh,true,,2.5,2.5,2.5,9.3,9.3,9.3,,\n"
+            )
+            rows = read_index(index)
+            self.assertEqual(rows[0]["fz_theta_ratio"], "")
+            self.assertIn("fz_theta_ratio", index.read_text().splitlines()[0])
+
+
+class FocusScoreTests(unittest.TestCase):
+    def test_serial7_theta_ratio_uses_fz(self) -> None:
+        rate = 100.0
+        stamps = np.arange(0, 40, 1 / rate)
+        eeg = np.zeros((stamps.size, 5))
+
+        def fill(start: float, end: float, amplitude: float) -> None:
+            mask = (stamps >= start) & (stamps < end)
+            eeg[mask, 4] = amplitude * np.sin(2 * np.pi * 6 * stamps[mask])
+
+        fill(0, 10, 10)
+        fill(10, 20, 10)
+        fill(20, 30, 10)
+        fill(30, 40, 20)
+        markers = [
+            (0.0, "Eyes_Open_1_Start"),
+            (10.0, "Eyes_Open_1_End"),
+            (10.0, "Eyes_Closed_Start"),
+            (20.0, "Eyes_Closed_End"),
+            (20.0, "Eyes_Open_2_Start"),
+            (30.0, "Eyes_Open_2_End"),
+            (30.0, "Task_Serial7_Start"),
+            (40.0, "Task_Serial7_End"),
+        ]
+        self.assertAlmostEqual(fz_theta_ratio(eeg, stamps, markers, skip=0), 2.0, delta=0.15)
+
+
+class ReportTests(unittest.TestCase):
+    def test_page_charts_passing_runs_only(self) -> None:
+        html = render_report(
+            [
+                {
+                    "started": "2026-11-06T16:09:16+08:00",
+                    "protocol": "berger",
+                    "qc": "pass",
+                    "phase_s": "60",
+                    "ratio_o1": "2.49",
+                    "fz_theta_ratio": "",
+                    "anomalies": "",
+                },
+                {
+                    "started": "2026-11-06T16:18:45+08:00",
+                    "protocol": "berger+serial7",
+                    "qc": "pass",
+                    "phase_s": "60",
+                    "ratio_o1": "2.10",
+                    "fz_theta_ratio": "1.68",
+                    "anomalies": "",
+                },
+                {
+                    "started": "2026-11-07T09:00:00+08:00",
+                    "protocol": "berger",
+                    "qc": "fail",
+                    "phase_s": "60",
+                    "ratio_o1": "9.99",
+                    "fz_theta_ratio": "",
+                    "anomalies": "",
+                },
+            ]
+        )
+        self.assertIn('data-ratio="2.4900"', html)
+        self.assertIn('data-ratio="1.6800"', html)
+        self.assertIn("6 Nov 16:18", html)
+        self.assertNotIn('data-ratio="9.9900"', html)
+        self.assertIn("Left out of the charts", html)
 
 
 if __name__ == "__main__":

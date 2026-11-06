@@ -148,6 +148,14 @@ diy-eeg-daily --annotate recordings/alpha-<timestamp>.xdf
 
 A caffeine or exercise day is the same command twice. Use the same pair id on both runs, and fill in the minutes-since questions on the second one. Leave a session marked `qc: fail` out of plots. The XDF is still kept.
 
+To review the saved days in a browser:
+
+```zsh
+diy-eeg-report
+```
+
+That writes `recordings/report.html`. One chart is the O1 eyes-closed / eyes-open ratio. The other is the Fz 4–8 Hz serial-7 / eyes-open ratio, on days that included serial-7. Open the file in a browser. A table of sleep, caffeine, and paste is not on this page yet.
+
 ## License
 
 This repository is licensed under [GNU GPL v3.0](LICENSE).

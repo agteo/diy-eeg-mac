@@ -27,6 +27,7 @@ diy-eeg-alpha = "diy_eeg_mac.alpha:main"
 diy-eeg-daily = "diy_eeg_mac.alpha:daily_main"
 diy-eeg-analyze-alpha = "diy_eeg_mac.analyze_alpha:main"
 diy-eeg-alpha-spectrum = "diy_eeg_mac.alpha_spectrum:main"
+diy-eeg-report = "diy_eeg_mac.report:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
