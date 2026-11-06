@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from diy_eeg_mac.alpha import channel_metrics, daily_phases
+from diy_eeg_mac.alpha import channel_metrics, daily_phases, format_channel_summary
 from diy_eeg_mac.session import append_index, dump_session, index_row, prompt_context, session_document
 
 
@@ -75,6 +75,23 @@ class ScoreTests(unittest.TestCase):
         self.assertAlmostEqual(scored["peak_hz"], 10.0, delta=0.5)
         self.assertGreater(included["ratio"], scored["ratio"])
 
+    def test_summary_names_fz_on_channel_4(self) -> None:
+        rate = 100.0
+        stamps = np.arange(0, 30, 1 / rate)
+        eeg = np.zeros((stamps.size, 5))
+        eeg[:, 4] = 10 * np.sin(2 * np.pi * 10 * stamps)
+        markers = [
+            (0.0, "Eyes_Open_1_Start"),
+            (10.0, "Eyes_Open_1_End"),
+            (10.0, "Eyes_Closed_Start"),
+            (20.0, "Eyes_Closed_End"),
+            (20.0, "Eyes_Open_2_Start"),
+            (30.0, "Eyes_Open_2_End"),
+        ]
+        text = format_channel_summary(eeg, stamps, markers)
+        self.assertIn("channel 4 (Fz)", text)
+        self.assertIn("channel 0 (O1): input not moving", text)
+
 
 class SessionLogTests(unittest.TestCase):
     def test_yaml_and_index_round_trip(self) -> None:
@@ -100,6 +117,7 @@ class SessionLogTests(unittest.TestCase):
         self.assertIn("protocol: berger+serial7", text)
         self.assertIn("minutes_since_exercise: null", text)
         self.assertIn("  O1: 1.8", text)
+        self.assertIn("  4: Fz", text)
 
         with tempfile.TemporaryDirectory() as tmp:
             index = Path(tmp) / "index.csv"

@@ -23,7 +23,7 @@ from diy_eeg_mac.session import index_row, prompt_context, session_document, ups
 EEG_NAME = "Custom_ESP32_EEG"
 MARKER_NAME = "AlphaMarkers"
 OCCIPITAL = ((0, "O1"), (1, "Oz"), (2, "O2"))
-CHANNEL_SITES = ("O1", "Oz", "O2", "POz")
+CHANNEL_SITES = ("O1", "Oz", "O2", "POz", "Fz")
 OPEN_BASELINE = ("Eyes_Open_1", "Eyes_Open_2")
 SCORE_SKIP_S = 2.0
 

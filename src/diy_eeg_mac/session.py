@@ -13,6 +13,7 @@ MONTAGE = {
     "1": "Oz",
     "2": "O2",
     "3": "POz",
+    "4": "Fz",
     "bias": "Fpz",
     "ref": "left-earlobe",
 }
@@ -49,7 +50,7 @@ _PLAIN = re.compile(r"^[A-Za-z0-9_./+-]+$")
 def prompt_context(input_fn=input) -> dict:
     """Ask for the context around a recording that has already been saved."""
     print("\nRecording saved. A few questions about this sitting.")
-    print("Montage: channel 0 O1, 1 Oz, 2 O2, 3 POz. Bias Fpz. Reference left earlobe.")
+    print("Montage: channel 0 O1, 1 Oz, 2 O2, 3 POz, 4 Fz. Bias Fpz. Reference left earlobe.")
     confirmed = _yes(input_fn, "Is that how this session was wired?", default_yes=True)
     montage_note = "" if confirmed else _required_text(input_fn, "What is different? ")
     hours = _required_float(input_fn, "Hours since wake: ", 0, 24)

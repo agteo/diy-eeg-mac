@@ -34,9 +34,9 @@ These controls change the display only. A LabRecorder file still contains the un
 
 ## Scope settings
 
-The numbers `0`–`7` are the eight board channels. This stream has no electrode names, so the viewer uses those indexes. The firmware derives bias from channels 1–4, so a four-electrode hookup uses `0`–`3`. Channels `4`–`7` stay in the stream even when nothing is connected to them.
+The numbers `0`–`7` are the eight board channels. This stream has no electrode names, so the viewer uses those indexes. With the daily montage, `0`–`3` are O1, Oz, O2, and POz, and `4` is Fz on J3 pin 5+. The firmware derives bias from board channels 1–4, so Fz is recorded and is not part of that mix. Channels `5`–`7` stay in the stream even when nothing is connected to them.
 
-Highlighted cells are the ones drawn on the plot. Click one cell to show only that channel. Hold Command and click to add or remove channels. Shift-click selects a range. When only the first four inputs are connected, select `0` through `3`.
+Highlighted cells are the ones drawn on the plot. Click one cell to show only that channel. Hold Command and click to add or remove channels. Shift-click selects a range. For the daily montage, select `0` through `4`.
 
 | Control | What to do |
 | --- | --- |

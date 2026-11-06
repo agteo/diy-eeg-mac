@@ -119,14 +119,14 @@ With the receiver already running:
 diy-eeg-daily
 ```
 
-The questions about sleep, caffeine, exercise, and paste come after the low sound, once the EEG is already saved. Whether O1 moved is read from the recording. The blocks are:
+Channel 0 is O1, 1 is Oz, 2 is O2, 3 is POz, and 4 is Fz on J3 pin 5+. Bias stays at Fpz. The reference stays on the left earlobe. The questions about sleep, caffeine, exercise, and paste come after the low sound, once the EEG is already saved. Whether O1 moved is read from the recording. The blocks are:
 
 1. **Settle, 5 seconds.** No sound. Sit still, eyes open.
 2. **Eyes open, 60 seconds.** One glass sound. Stare at a fixed mark.
 3. **Eyes closed, 60 seconds.** Two pings. Close on the first ping, without squeezing.
 4. **Eyes open, 60 seconds.** One glass sound. Stare at the same mark.
 
-Answer yes to the serial-7 question, or pass `--task serial7`, and two further blocks follow. The terminal prints a three-digit seed before they start.
+Pass `--task serial7` on a focus day. Two further blocks follow, and the terminal prints a three-digit seed before they start. The saved summary still scores 8–12 Hz alpha, including the Fz line. Frontal theta is not scored yet.
 
 5. **Serial 7, 60 seconds.** Three pings. Eyes open. Subtract 7 from the seed, silently, until the next sound.
 6. **Eyes open, 30 seconds.** One glass sound. Stop calculating and stare at the mark.
@@ -136,7 +136,7 @@ The low sound means the files are saved. Scoring leaves out the first 2 seconds 
 Each run writes three files and appends one row to the index:
 
 - `recordings/alpha-<timestamp>.xdf` — EEG and markers
-- `recordings/alpha-<timestamp>.txt` — O1, Oz, and O2 alpha levels
+- `recordings/alpha-<timestamp>.txt` — alpha levels for each channel that moved, labeled O1, Oz, O2, POz, and Fz
 - `recordings/alpha-<timestamp>.yaml` — the answers from the start of the session
 - `recordings/index.csv` — one row per session
 
