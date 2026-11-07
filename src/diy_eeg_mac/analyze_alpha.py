@@ -4,18 +4,25 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pyxdf
 from scipy.signal import butter, filtfilt
 
+from diy_eeg_mac.alpha import MAINS_HZ, mains_notch
+from diy_eeg_mac.session import mains_hz_from_session
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("xdf_file")
     parser.add_argument("--channel", type=int, default=0, help="zero-based channel index")
+    parser.add_argument("--mains", choices=("50", "60"), help="mains notch in Hz (default: the sitting's saved location, or 50)")
     args = parser.parse_args()
+    recording = Path(args.xdf_file)
+    mains_hz = float(args.mains) if args.mains else (mains_hz_from_session(recording) or MAINS_HZ)
     streams, _ = pyxdf.load_xdf(args.xdf_file)
     eeg = next((stream for stream in streams if stream["info"]["name"][0] == "Custom_ESP32_EEG"), None)
     if eeg is None:
@@ -28,7 +35,8 @@ def main() -> None:
         raise SystemExit("Recording is too short to analyse.")
     rate = 1 / np.median(np.diff(timestamps))
     b, a = butter(4, [8 / (rate / 2), 12 / (rate / 2)], btype="band")
-    alpha = filtfilt(b, a, values[:, args.channel])
+    print(f"Mains notch {mains_hz:.0f} Hz. The saved recording is left as it was.")
+    alpha = filtfilt(b, a, mains_notch(values[:, args.channel], rate, mains_hz))
     seconds = timestamps - timestamps[0]
     figure, axes = plt.subplots(2, 1, sharex=True, figsize=(12, 7))
     axes[0].plot(seconds, values[:, args.channel], linewidth=0.5)

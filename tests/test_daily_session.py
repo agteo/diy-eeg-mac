@@ -5,8 +5,15 @@ from pathlib import Path
 
 import numpy as np
 
-from diy_eeg_mac.alpha import channel_metrics, daily_phases, format_channel_summary, fz_theta_ratio
-from diy_eeg_mac.report import render_report
+from diy_eeg_mac.alpha import (
+    channel_metrics,
+    daily_phases,
+    format_channel_summary,
+    fz_focus_scores,
+    fz_theta_ratio,
+    mains_notch,
+)
+from diy_eeg_mac.report import EXAMPLE_NOTICE, example_rows, render_report
 from diy_eeg_mac.session import append_index, dump_session, index_row, prompt_context, read_index, session_document
 
 
@@ -97,10 +104,12 @@ class ScoreTests(unittest.TestCase):
 class SessionLogTests(unittest.TestCase):
     def test_yaml_and_index_round_trip(self) -> None:
         context = prompt_context(
-            _answers("", "1.5", "6.5", "80", "40", "", "coffee-1", "2", "fresh", "blinked once"),
+            _answers("singapore", "", "1.5", "6.5", "80", "40", "", "coffee-1", "2", "fresh", "blinked once"),
         )
         context["qc"] = "pass"
         self.assertEqual(context["caffeine_mg"], 80)
+        self.assertEqual(context["location"], "singapore")
+        self.assertEqual(context["mains_hz"], 50)
         document = session_document(
             context,
             started="2026-11-06T07:40:00+08:00",
@@ -119,6 +128,8 @@ class SessionLogTests(unittest.TestCase):
         self.assertIn("minutes_since_exercise: null", text)
         self.assertIn("  O1: 1.8", text)
         self.assertIn("  4: Fz", text)
+        self.assertIn("location: singapore", text)
+        self.assertIn("mains_hz: 50", text)
 
         with tempfile.TemporaryDirectory() as tmp:
             index = Path(tmp) / "index.csv"
@@ -133,6 +144,15 @@ class SessionLogTests(unittest.TestCase):
         self.assertEqual(rows[0]["pair_id"], "coffee-1")
         self.assertEqual(rows[0]["anomalies"], "blinked once")
         self.assertEqual(rows[0]["fz_theta_ratio"], "")
+        self.assertEqual(rows[0]["location"], "singapore")
+        self.assertEqual(rows[0]["mains_hz"], "50")
+
+    def test_united_states_selects_a_sixty_hertz_notch(self) -> None:
+        context = prompt_context(
+            _answers("united-states", "", "1", "7", "0", "", "", "1", "fresh", ""),
+        )
+        self.assertEqual(context["location"], "united-states")
+        self.assertEqual(context["mains_hz"], 60)
 
     def test_old_index_gains_the_focus_column(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -175,6 +195,74 @@ class FocusScoreTests(unittest.TestCase):
         ]
         self.assertAlmostEqual(fz_theta_ratio(eeg, stamps, markers, skip=0), 2.0, delta=0.15)
 
+    def test_engagement_falls_when_theta_rises(self) -> None:
+        rate = 100.0
+        stamps = np.arange(0, 40, 1 / rate)
+        eeg = np.zeros((stamps.size, 5))
+
+        def tone(start: float, end: float, frequency: float, amplitude: float) -> None:
+            mask = (stamps >= start) & (stamps < end)
+            eeg[mask, 4] += amplitude * np.sin(2 * np.pi * frequency * stamps[mask])
+
+        for start in (0.0, 10.0, 20.0):
+            tone(start, start + 10, 6, 10)
+            tone(start, start + 10, 10, 10)
+            tone(start, start + 10, 20, 10)
+        tone(30, 40, 6, 20)
+        tone(30, 40, 10, 10)
+        tone(30, 40, 20, 5)
+        markers = [
+            (0.0, "Eyes_Open_1_Start"),
+            (10.0, "Eyes_Open_1_End"),
+            (10.0, "Eyes_Closed_Start"),
+            (20.0, "Eyes_Closed_End"),
+            (20.0, "Eyes_Open_2_Start"),
+            (30.0, "Eyes_Open_2_End"),
+            (30.0, "Task_Serial7_Start"),
+            (40.0, "Task_Serial7_End"),
+        ]
+        scores = fz_focus_scores(eeg, stamps, markers, skip=0)
+        self.assertIsNotNone(scores)
+        assert scores is not None
+        self.assertLess(scores["engagement_task"], scores["engagement_open"])
+        self.assertGreater(scores["tbr_task"], scores["tbr_open"])
+        self.assertAlmostEqual(scores["engagement_open"], 0.5, delta=0.15)
+        self.assertGreater(scores["tbr_task"], 4)
+
+
+class MainsNotchTests(unittest.TestCase):
+    def test_fifty_hertz_drops_and_alpha_stays(self) -> None:
+        from scipy.signal import butter, filtfilt
+
+        rate = 500.0
+        stamps = np.arange(0, 4, 1 / rate)
+        clean = np.sin(2 * np.pi * 10 * stamps)
+        noisy = clean + 20 * np.sin(2 * np.pi * 50 * stamps)
+        filtered = mains_notch(noisy, rate)
+
+        def band_rms(signal: np.ndarray, low: float, high: float) -> float:
+            narrowed = filtfilt(*butter(4, [low / (rate / 2), high / (rate / 2)], btype="band"), signal)
+            return float(np.sqrt(np.mean(narrowed**2)))
+
+        self.assertLess(band_rms(filtered, 48, 52), band_rms(noisy, 48, 52) * 0.1)
+        self.assertAlmostEqual(band_rms(filtered, 8, 12), band_rms(clean, 8, 12), delta=0.05)
+
+    def test_sixty_hertz_notch_drops_sixty_hertz(self) -> None:
+        from scipy.signal import butter, filtfilt
+
+        rate = 500.0
+        stamps = np.arange(0, 4, 1 / rate)
+        clean = np.sin(2 * np.pi * 10 * stamps)
+        noisy = clean + 20 * np.sin(2 * np.pi * 60 * stamps)
+        filtered = mains_notch(noisy, rate, 60)
+
+        def band_rms(signal: np.ndarray, low: float, high: float) -> float:
+            narrowed = filtfilt(*butter(4, [low / (rate / 2), high / (rate / 2)], btype="band"), signal)
+            return float(np.sqrt(np.mean(narrowed**2)))
+
+        self.assertLess(band_rms(filtered, 58, 62), band_rms(noisy, 58, 62) * 0.1)
+        self.assertAlmostEqual(band_rms(filtered, 8, 12), band_rms(clean, 8, 12), delta=0.05)
+
 
 class ReportTests(unittest.TestCase):
     def test_page_charts_passing_runs_only(self) -> None:
@@ -209,11 +297,31 @@ class ReportTests(unittest.TestCase):
                 },
             ]
         )
-        self.assertIn('data-ratio="2.4900"', html)
-        self.assertIn('data-ratio="1.6800"', html)
-        self.assertIn("6 Nov 16:18", html)
-        self.assertNotIn('data-ratio="9.9900"', html)
-        self.assertIn("Left out of the charts", html)
+        self.assertIn("O1 eyes closed", html)
+        self.assertIn("Fz focus", html)
+        self.assertIn("Fz engagement", html)
+        self.assertIn("Fz theta/beta", html)
+        self.assertIn("Engagement index", html)
+        self.assertIn("not a separate focus grade", html)
+        self.assertIn("Waveform", html)
+        self.assertIn("Spectrum", html)
+        self.assertIn("1.68", html)
+        self.assertIn('session.qc === "pass"', html)
+        self.assertIn("stays out of the trend", html)
+        self.assertIn("What the words mean", html)
+        self.assertIn("Berger effect", html)
+        self.assertIn("What this view is showing", html)
+
+    def test_example_page_shows_scores_without_a_waveform(self) -> None:
+        html = render_report(example_rows(), notice=EXAMPLE_NOTICE)
+        self.assertIn("Example only", html)
+        self.assertIn("Fz engagement", html)
+        self.assertIn("Fz theta/beta", html)
+        self.assertIn("1.45", html)
+        self.assertIn("0.41", html)
+        self.assertIn('"traces":null', html)
+        self.assertNotIn(".xdf", html)
+        self.assertIn("index numbers only", html)
 
 
 if __name__ == "__main__":

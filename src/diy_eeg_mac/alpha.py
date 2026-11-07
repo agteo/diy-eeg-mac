@@ -16,7 +16,7 @@ from pathlib import Path
 
 import numpy as np
 from pylsl import StreamInfo, StreamInlet, StreamOutlet, local_clock, resolve_byprop
-from scipy.signal import butter, filtfilt, welch
+from scipy.signal import butter, filtfilt, iirnotch, welch
 
 from diy_eeg_mac.session import index_row, prompt_context, session_document, upsert_index, write_session
 
@@ -26,6 +26,19 @@ OCCIPITAL = ((0, "O1"), (1, "Oz"), (2, "O2"))
 CHANNEL_SITES = ("O1", "Oz", "O2", "POz", "Fz")
 OPEN_BASELINE = ("Eyes_Open_1", "Eyes_Open_2")
 SCORE_SKIP_S = 2.0
+MAINS_HZ = 50.0
+
+
+def mains_notch(signal: np.ndarray, rate: float, freq: float = MAINS_HZ) -> np.ndarray:
+    """Remove a narrow band around the local mains frequency. The recording file is left as it was.
+
+    The default is 50 Hz. Pass 60 where the grid is 60 Hz. The notch is skipped
+    when the sample rate cannot represent that frequency, so a short test at a
+    low rate is unchanged.
+    """
+    if signal.size < 50 or rate <= freq * 2.2:
+        return signal
+    return filtfilt(*iirnotch(freq, 30.0, fs=rate), signal)
 
 
 def cue(sound: str) -> None:
@@ -259,6 +272,7 @@ def channel_metrics(
     rate: float,
     skip: float,
     band_hz: tuple[float, float] = (8.0, 12.0),
+    mains_hz: float = MAINS_HZ,
 ) -> dict | None:
     """Band RMS per phase, Berger ratio, eyes-closed peak, and serial-7 ratio.
 
@@ -270,7 +284,7 @@ def channel_metrics(
     if finite.sum() < 100 or rate <= 24:
         return None
     filled = np.interp(stamps, stamps[finite], signal[finite])
-    centered = filled - np.median(filled[np.isfinite(filled)])
+    centered = mains_notch(filled - np.median(filled[np.isfinite(filled)]), rate, mains_hz)
     low, high = band_hz
     band = filtfilt(*butter(4, [low / (rate / 2), high / (rate / 2)], btype="band"), centered)
     rms: dict[str, float] = {}
@@ -296,6 +310,7 @@ def fz_theta_ratio(
     stamps: np.ndarray,
     markers: list[tuple[float, str]],
     skip: float,
+    mains_hz: float = MAINS_HZ,
 ) -> float:
     """Serial-7 / eyes-open RMS at Fz in the 4–8 Hz band.
 
@@ -304,10 +319,65 @@ def fz_theta_ratio(
     """
     if eeg.ndim != 2 or eeg.shape[1] <= 4 or _input_is_still(eeg[:, 4]):
         return float("nan")
-    metrics = channel_metrics(eeg[:, 4], stamps, markers, _recording_rate(stamps), skip, (4.0, 8.0))
+    metrics = channel_metrics(eeg[:, 4], stamps, markers, _recording_rate(stamps), skip, (4.0, 8.0), mains_hz)
     if metrics is None:
         return float("nan")
     return float(metrics["task_ratio"])
+
+
+def fz_focus_scores(
+    eeg: np.ndarray,
+    stamps: np.ndarray,
+    markers: list[tuple[float, str]],
+    skip: float,
+    mains_hz: float = MAINS_HZ,
+) -> dict[str, float] | None:
+    """Engagement index and theta/beta at Fz, for the stare and for serial 7.
+
+    Engagement is beta power divided by alpha power plus theta power. Theta/beta
+    is theta power divided by beta power. Bands match the report: theta 4–8 Hz,
+    alpha 8–12 Hz, beta 13–30 Hz. Eyes-open power is the mean of Eyes_Open_1 and
+    Eyes_Open_2. A still Fz input, or a run without serial 7, returns None.
+    """
+    if eeg.ndim != 2 or eeg.shape[1] <= 4 or _input_is_still(eeg[:, 4]):
+        return None
+    rate = _recording_rate(stamps)
+    bands = {"theta": (4.0, 8.0), "alpha": (8.0, 12.0), "beta": (13.0, 30.0)}
+    power: dict[str, dict[str, float]] = {}
+    for name, band in bands.items():
+        metrics = channel_metrics(eeg[:, 4], stamps, markers, rate, skip, band, mains_hz)
+        if metrics is None:
+            return None
+        rms = metrics["rms"]
+        open_levels = [rms.get(phase, np.nan) for phase in OPEN_BASELINE]
+        task = rms.get("Task_Serial7", np.nan)
+        if not np.isfinite(task) or not all(np.isfinite(level) for level in open_levels):
+            return None
+        power[name] = {
+            "open": float(np.mean(np.square(open_levels))),
+            "task": float(task**2),
+        }
+
+    def engagement(side: str) -> float:
+        denom = power["alpha"][side] + power["theta"][side]
+        if denom <= 0:
+            return float("nan")
+        return power["beta"][side] / denom
+
+    def theta_beta(side: str) -> float:
+        if power["beta"][side] <= 0:
+            return float("nan")
+        return power["theta"][side] / power["beta"][side]
+
+    scores = {
+        "engagement_open": engagement("open"),
+        "engagement_task": engagement("task"),
+        "tbr_open": theta_beta("open"),
+        "tbr_task": theta_beta("task"),
+    }
+    if not all(np.isfinite(value) for value in scores.values()):
+        return None
+    return scores
 
 
 def occipital_metrics(
@@ -315,13 +385,14 @@ def occipital_metrics(
     stamps: np.ndarray,
     markers: list[tuple[float, str]],
     skip: float,
+    mains_hz: float = MAINS_HZ,
 ) -> dict[str, dict]:
     rate = _recording_rate(stamps)
     found: dict[str, dict] = {}
     for index, name in OCCIPITAL:
         if index >= eeg.shape[1]:
             continue
-        metrics = channel_metrics(eeg[:, index], stamps, markers, rate, skip)
+        metrics = channel_metrics(eeg[:, index], stamps, markers, rate, skip, mains_hz=mains_hz)
         if metrics is not None:
             found[name] = metrics
     return found
@@ -349,19 +420,21 @@ def format_channel_summary(
     stamps: np.ndarray,
     markers: list[tuple[float, str]],
     skip: float = 0.0,
+    mains_hz: float = MAINS_HZ,
 ) -> str:
     """Alpha RMS for every saved channel. A still input is named instead of scored."""
     rate = _recording_rate(stamps)
+    heading = f"alpha RMS (8–12 Hz), sample rate {rate:.1f} Hz, mains notch {mains_hz:.0f} Hz"
     if skip:
-        lines = [f"alpha RMS (8–12 Hz), sample rate {rate:.1f} Hz, scored from {skip:.1f} s after each start marker"]
+        lines = [f"{heading}, scored from {skip:.1f} s after each start marker"]
     else:
-        lines = [f"alpha RMS (8–12 Hz), sample rate {rate:.1f} Hz"]
+        lines = [heading]
     for index in range(eeg.shape[1]):
         heading = _channel_heading(index)
         if _input_is_still(eeg[:, index]):
             lines.append(f"{heading}: input not moving")
             continue
-        metrics = channel_metrics(eeg[:, index], stamps, markers, rate, skip)
+        metrics = channel_metrics(eeg[:, index], stamps, markers, rate, skip, mains_hz=mains_hz)
         if metrics is None:
             lines.append(f"{heading}: input not moving")
             continue
@@ -444,15 +517,16 @@ def _save_recording(
     summary_path = recording.with_suffix(".txt")
     session_path = recording.with_suffix(".yaml")
     write_xdf(recording, eeg, stamps, markers, sample_rate)
-    metrics = occipital_metrics(eeg, stamps, markers, score_skip)
-    context_focus = fz_theta_ratio(eeg, stamps, markers, score_skip)
-    summary = format_channel_summary(eeg, stamps, markers, score_skip)
-    summary_path.parent.mkdir(parents=True, exist_ok=True)
-    summary_path.write_text(summary)
     print(f"\nComplete. Saved {recording.resolve()}")
-    print(summary.rstrip())
     cue("Basso")
     context = prompt_context()
+    mains_hz = float(context["mains_hz"])
+    metrics = occipital_metrics(eeg, stamps, markers, score_skip, mains_hz)
+    context_focus = fz_theta_ratio(eeg, stamps, markers, score_skip, mains_hz)
+    summary = format_channel_summary(eeg, stamps, markers, score_skip, mains_hz)
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    summary_path.write_text(summary)
+    print(summary.rstrip())
     context["qc"] = _o1_qc(eeg)
     context["fz_theta_ratio"] = context_focus
     document = session_document(
@@ -496,11 +570,12 @@ def _annotate(path: Path, score_skip: float | None) -> None:
     except ValueError:
         started = datetime.fromtimestamp(path.stat().st_mtime).astimezone()
     ended = datetime.fromtimestamp(path.stat().st_mtime).astimezone()
-    metrics = occipital_metrics(eeg, stamps, markers, score_skip)
-    print(format_channel_summary(eeg, stamps, markers, score_skip).rstrip())
     context = prompt_context()
+    mains_hz = float(context["mains_hz"])
+    metrics = occipital_metrics(eeg, stamps, markers, score_skip, mains_hz)
+    print(format_channel_summary(eeg, stamps, markers, score_skip, mains_hz).rstrip())
     context["qc"] = _o1_qc(eeg)
-    context["fz_theta_ratio"] = fz_theta_ratio(eeg, stamps, markers, score_skip)
+    context["fz_theta_ratio"] = fz_theta_ratio(eeg, stamps, markers, score_skip, mains_hz)
     document = session_document(
         context,
         started=started.isoformat(timespec="seconds"),

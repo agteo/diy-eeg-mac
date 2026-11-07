@@ -18,6 +18,31 @@ MONTAGE = {
     "ref": "left-earlobe",
 }
 PASTES = ("fresh", "same-day", "reused")
+# Wall-supply frequency at the sitting. Japan is split: east is 50 Hz, west is 60 Hz.
+LOCATIONS = (
+    ("singapore", "Singapore", 50),
+    ("europe", "Europe", 50),
+    ("united-kingdom", "United Kingdom", 50),
+    ("australia", "Australia", 50),
+    ("china", "China", 50),
+    ("india", "India", 50),
+    ("united-states", "United States", 60),
+    ("canada", "Canada", 60),
+    ("mexico", "Mexico", 60),
+    ("south-korea", "South Korea", 60),
+    ("taiwan", "Taiwan", 60),
+    ("philippines", "Philippines", 60),
+    ("japan-east", "Japan, east", 50),
+    ("japan-west", "Japan, west", 60),
+    ("other-50", "Somewhere else on a 50 Hz grid", 50),
+    ("other-60", "Somewhere else on a 60 Hz grid", 60),
+)
+MAINS_NOTE = (
+    "The wall supply leaks a steady tone into the electrodes. "
+    "That tone is 50 Hz in some countries and 60 Hz in others. "
+    "Scores and drawings remove a narrow notch at that tone so it is not counted as brain rhythm. "
+    "The saved recording is left as it was."
+)
 INDEX_COLUMNS = [
     "started",
     "protocol",
@@ -33,6 +58,8 @@ INDEX_COLUMNS = [
     "pair_id",
     "drowsy_1_to_5",
     "paste",
+    "location",
+    "mains_hz",
     "montage_confirmed",
     "serial7_seed",
     "ratio_o1",
@@ -48,9 +75,33 @@ INDEX_COLUMNS = [
 _PLAIN = re.compile(r"^[A-Za-z0-9_./+-]+$")
 
 
+def mains_hz_from_session(path: Path) -> float | None:
+    """Read ``mains_hz`` from a session log written beside an XDF. None when it was not saved."""
+    log = path.with_suffix(".yaml")
+    if not log.exists():
+        return None
+    for line in log.read_text().splitlines():
+        if not line.startswith("mains_hz:"):
+            continue
+        try:
+            value = float(line.split(":", 1)[1].strip())
+        except ValueError:
+            return None
+        if value in (50.0, 60.0):
+            return value
+        return None
+    return None
+
+
 def prompt_context(input_fn=input) -> dict:
     """Ask for the context around a recording that has already been saved."""
     print("\nRecording saved. A few questions about this sitting.")
+    print(MAINS_NOTE)
+    print("Where was this sitting?")
+    for key, label, hz in LOCATIONS:
+        print(f"  {key} — {label} ({hz} Hz)")
+    location = _choice(input_fn, "Location: ", tuple(key for key, _, _ in LOCATIONS))
+    mains_hz = next(hz for key, _, hz in LOCATIONS if key == location)
     print("Montage: channel 0 O1, 1 Oz, 2 O2, 3 POz, 4 Fz. Bias Fpz. Reference left earlobe.")
     confirmed = _yes(input_fn, "Is that how this session was wired?", default_yes=True)
     montage_note = "" if confirmed else _required_text(input_fn, "What is different? ")
@@ -77,6 +128,8 @@ def prompt_context(input_fn=input) -> dict:
         "pair_id": pair_id,
         "drowsy_1_to_5": drowsy,
         "paste": paste,
+        "location": location,
+        "mains_hz": mains_hz,
         "anomalies": anomalies,
     }
 
@@ -113,6 +166,8 @@ def session_document(
         "pair_id": context["pair_id"],
         "drowsy_1_to_5": int(context["drowsy_1_to_5"]),
         "paste": context["paste"],
+        "location": context["location"],
+        "mains_hz": context["mains_hz"],
         "serial7_seed": serial7_seed,
         "qc": context["qc"],
         "anomalies": context["anomalies"],
@@ -214,6 +269,8 @@ def index_row(document: dict) -> dict:
         "pair_id": document["pair_id"],
         "drowsy_1_to_5": document["drowsy_1_to_5"],
         "paste": document["paste"],
+        "location": document.get("location"),
+        "mains_hz": document.get("mains_hz"),
         "montage_confirmed": document["montage_confirmed"],
         "serial7_seed": document["serial7_seed"],
         "ratio_o1": ratio.get("O1"),
