@@ -2,7 +2,7 @@
 
 These are the setup sheets and one live viewer capture. Checked against the firmware in `Software/Firmware_Platformio_Project/src/main.cpp` and the board notes in `Manufacturing/JLCPCB/ORDER_NOTES.md`.
 
-Board channels 1–8 (J3 pins 1+…8+) appear as channels 0–7 in the LSL viewer and in saved XDF files. With this montage: viewer 0 = O1 (1+), 1 = Oz (2+), 2 = O2 (3+), 3 = POz (4+). Viewer 4–7 are unconnected channels 5–8.
+Board channels 1–8 (J3 pins 1+…8+) appear as channels 0–7 in the LSL viewer and in saved XDF files. With this montage: viewer 0 = O1 (1+), 1 = Oz (2+), 2 = O2 (3+), 3 = POz (4+), 4 = Fz (5+). Viewer 5–7 are unconnected channels 6–8.
 
 The firmware only defines the BIAS pin. The skin site is a montage choice, and this repo uses the forehead (Fpz). REF stays on the left earlobe.
 
@@ -12,7 +12,8 @@ The firmware only defines the BIAS pin. The skin site is a montage choice, and t
 | 1 | J3 2+ | Oz, midline |
 | 2 | J3 3+ | O2, right |
 | 3 | J3 4+ | POz |
-| 4–7 | J3 5+–8+ | not used |
+| 4 | J3 5+ | Fz |
+| 5–7 | J3 6+–8+ | not used |
 
 `diy-eeg-alpha` prints the summary for viewer channel 0, which is O1 when the head is wired as drawn.
 
@@ -40,12 +41,12 @@ Hold SW3 (BOOT), tap SW2 (RESET), release SW3, then upload. Press SW2 again afte
 
 ![Electrode connector](figures/cap-and-connect.png)
 
-The header order matches the board notes: each pair is signal then the unused pin, BIAS/GND, 8+/8−, down to 1+/1−, then REF/SRB2. With this firmware the reference is SRB1, so electrodes go on BIAS, 1+ through 4+ for this montage, and REF. Leave GND, the minus pins, and SRB2 empty. Connect the leads with the board unpowered. The BIAS lead goes to the forehead (Fpz). REF goes to the left earlobe.
+The header order matches the board notes: each pair is signal then the unused pin, BIAS/GND, 8+/8−, down to 1+/1−, then REF/SRB2. With this firmware the reference is SRB1, so electrodes go on BIAS, 1+ through 5+ for this montage, and REF. Leave GND, the minus pins, and SRB2 empty. Connect the leads with the board unpowered. The BIAS lead goes to the forehead (Fpz). Fz uses pin 5+. REF goes to the left earlobe.
 
 ## Electrode placement
 
 ![Occipital placement](figures/electrode-placement.png)
 
-Board channels 1–8 (J3 pins 1+…8+) appear as channels 0–7 in the LSL viewer and in saved XDF files. With this montage: viewer 0 = O1 (1+), 1 = Oz (2+), 2 = O2 (3+), 3 = POz (4+). Viewer 4–7 are unconnected channels 5–8.
+Board channels 1–8 (J3 pins 1+…8+) appear as channels 0–7 in the LSL viewer and in saved XDF files. With this montage: viewer 0 = O1 (1+), 1 = Oz (2+), 2 = O2 (3+), 3 = POz (4+), 4 = Fz (5+). Viewer 5–7 are unconnected channels 6–8.
 
-O1, Oz, O2, and POz are in the usual 10-20 neighbourhood: Oz about 10% of the way from inion toward nasion, O1 and O2 level with Oz, POz about 30% of the way from inion toward nasion. Distances in centimetres depend on the head. Grey sites are BIAS and REF. Blue sites are the four recording inputs.
+O1, Oz, O2, and POz are in the usual 10-20 neighbourhood: Oz about 10% of the way from inion toward nasion, O1 and O2 level with Oz, POz about 30% of the way from inion toward nasion. Fz is on the midline, about 30% of the way from nasion toward inion. Distances in centimetres depend on the head. Grey sites are BIAS and REF. Blue sites are the five recording inputs.

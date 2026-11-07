@@ -3,7 +3,7 @@
 
 Reads the XDF file written by ``diy-eeg-alpha`` and saves a PNG with the
 spectrum of one channel for the eyes-open phases (averaged) and the eyes-closed
-phase, with the 8–12 Hz alpha band shaded and the eyes-closed alpha peak marked.
+phase, with theta, alpha, and beta shaded and the eyes-closed alpha peak marked.
 A peak inside the band with eyes closed is the Berger effect.
 """
 
@@ -16,9 +16,15 @@ import numpy as np
 import pyxdf
 from scipy.signal import welch
 
-from diy_eeg_mac.alpha import EEG_NAME, MARKER_NAME, _phase_windows, _recording_rate
+from diy_eeg_mac.alpha import EEG_NAME, MAINS_HZ, MARKER_NAME, _phase_windows, _recording_rate, mains_notch
+from diy_eeg_mac.session import mains_hz_from_session
 
 ALPHA_BAND = (8.0, 12.0)
+BANDS = (
+    (4.0, 8.0, "theta\n4–8 Hz", "#e7eef6"),
+    (8.0, 12.0, "alpha\n8–12 Hz", "#ecebe6"),
+    (13.0, 30.0, "beta\n13–30 Hz", "#f6eee8"),
+)
 OPEN_PHASES = ("Eyes_Open_1", "Eyes_Open_2")
 CLOSED_PHASE = "Eyes_Closed"
 
@@ -69,7 +75,10 @@ def main() -> None:
     parser.add_argument("--label", help="electrode name for the title, e.g. O1")
     parser.add_argument("--out", help="output PNG (default: <recording>-spectrum-ch<N>.png next to the XDF)")
     parser.add_argument("--fmax", type=float, default=30.0, help="highest frequency to plot in Hz (default 30)")
+    parser.add_argument("--mains", choices=("50", "60"), help="mains notch in Hz (default: the sitting's saved location, or 50)")
     args = parser.parse_args()
+    recording = Path(args.xdf_file)
+    mains_hz = float(args.mains) if args.mains else (mains_hz_from_session(recording) or MAINS_HZ)
 
     values, stamps, markers = _load(args.xdf_file)
     if values.ndim != 2 or not 0 <= args.channel < values.shape[1]:
@@ -79,6 +88,8 @@ def main() -> None:
         raise SystemExit(f"Channel {args.channel} is flat in this recording; is that input connected?")
     windows = _phase_windows(markers)
     rate = _recording_rate(stamps)
+    print(f"Mains notch {mains_hz:.0f} Hz. The saved recording is left as it was.")
+    signal = mains_notch(signal, rate, mains_hz)
     freqs, spectra = phase_spectra(signal, stamps, windows, rate)
     opens = [spectra[name] for name in OPEN_PHASES if name in spectra]
     if CLOSED_PHASE not in spectra or not opens:
@@ -97,9 +108,12 @@ def main() -> None:
     figure, axis = plt.subplots(figsize=(10, 5.6), dpi=160)
     figure.patch.set_facecolor(surface)
     axis.set_facecolor(surface)
-    axis.axvspan(*ALPHA_BAND, color="#ecebe6", zorder=0, lw=0)
-    axis.text(sum(ALPHA_BAND) / 2, 0.03, "alpha band\n8–12 Hz", transform=axis.get_xaxis_transform(),
-              ha="center", va="bottom", color=ink2, fontsize=11)
+    for start, end, label, color in BANDS:
+        if end < 2 or start > args.fmax:
+            continue
+        axis.axvspan(max(start, 2), min(end, args.fmax), color=color, zorder=0, lw=0)
+        axis.text((max(start, 2) + min(end, args.fmax)) / 2, 0.03, label, transform=axis.get_xaxis_transform(),
+                  ha="center", va="bottom", color=ink2, fontsize=11)
     axis.semilogy(freqs[keep], open_power[keep], color="#2a78d6", lw=2,
                   label="Eyes open" + (" (mean of both phases)" if len(opens) > 1 else ""))
     axis.semilogy(freqs[keep], closed_power[keep], color="#eb6834", lw=2, label="Eyes closed")

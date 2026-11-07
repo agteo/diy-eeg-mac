@@ -17,6 +17,7 @@ Included:
 - BLE receiver that publishes an eight-channel `Custom_ESP32_EEG` LSL stream at 500 Hz
 - Alpha eyes-open / eyes-closed LSL marker session
 - Daily Berger runner with an optional serial-7 block, a session log, and `recordings/index.csv`
+- Fz focus, engagement, and theta/beta from that serial-7 minute, reviewed in an HTML report
 - XDF alpha-band plotter
 - Unit tests for the binary BLE-frame decoder, including sample loss separate from notification arrival spacing
 
@@ -93,13 +94,13 @@ Sit still, with electrodes on the back of the head. The terminal names each phas
 2. **Eyes closed.** Two pings. Close your eyes without squeezing, and keep your face and neck still. Stay there until the next sound.
 3. **Eyes open.** One glass sound. Open your eyes and stare at the same point. Stay there until the low sound.
 
-The low sound means the EEG is saved. The summary prints the 8–12 Hz level for each phase on every channel, and the eyes-closed / eyes-open ratio. An input that never moves is reported as not moving. The script then asks about sleep, caffeine, exercise, and paste, and writes those answers beside the recording. Whether O1 moved is taken from the recording. Plot one channel with:
+The low sound means the EEG is saved. The script then asks where the sitting was. The wall supply leaks a steady tone into the electrodes, 50 Hz in some countries and 60 Hz in others, and the scores remove a narrow notch at that tone so it is not counted as brain rhythm. The saved recording is left as it was. It also asks about sleep, caffeine, exercise, and paste. The summary then prints the 8–12 Hz level for each phase on every channel, and the eyes-closed / eyes-open ratio. An input that never moves is reported as not moving. Whether O1 moved is taken from the recording. Plot one channel with:
 
 ```zsh
 diy-eeg-analyze-alpha recordings/alpha-<timestamp>.xdf --channel 0
 ```
 
-The top trace is the raw channel, including the electrode offset. The bottom trace is the 8–12 Hz band. Pass `--channel` with another index, from 0 through 7, to plot a different input. The saved text summary lists all eight channels.
+The top trace is the raw channel, including the electrode offset. The bottom trace is the 8–12 Hz band, after the mains notch. Pass `--channel` with another index, from 0 through 7, to plot a different input. The notch follows the location saved with that sitting. Pass `--mains 60` or `--mains 50` to choose it for this plot. The saved text summary lists all eight channels.
 
 To see the Berger effect as a spectrum, save an eyes-open vs eyes-closed power spectrum for one channel:
 
@@ -107,7 +108,7 @@ To see the Berger effect as a spectrum, save an eyes-open vs eyes-closed power s
 diy-eeg-alpha-spectrum recordings/alpha-<timestamp>.xdf --channel 0 --label O1
 ```
 
-It writes `recordings/alpha-<timestamp>-spectrum-ch0.png`, with the 8–12 Hz band shaded, and prints the eyes-closed alpha peak. The eyes-open line is the mean of both eyes-open phases. Use `--out` to choose the file name and `--fmax` to change the frequency range (default 30 Hz). An example from a real session is in [this lab note](https://alexteo.com/blog/berger-test-diy-eeg-2026-11-01.html).
+It writes `recordings/alpha-<timestamp>-spectrum-ch0.png`, with the 8–12 Hz band shaded, and prints the eyes-closed alpha peak. The eyes-open line is the mean of both eyes-open phases. The spectrum uses the same mains notch as the summary. Pass `--mains 60` or `--mains 50` to choose it for this plot. Use `--out` to choose the file name and `--fmax` to change the frequency range (default 30 Hz). An example from a real session is in [this lab note](https://alexteo.com/blog/berger-test-diy-eeg-2026-11-01.html).
 
 ## Daily session
 
@@ -119,14 +120,14 @@ With the receiver already running:
 diy-eeg-daily
 ```
 
-The questions about sleep, caffeine, exercise, and paste come after the low sound, once the EEG is already saved. Whether O1 moved is read from the recording. The blocks are:
+Channel 0 is O1, 1 is Oz, 2 is O2, 3 is POz, and 4 is Fz on J3 pin 5+. Bias stays at Fpz. The reference stays on the left earlobe. After the low sound, once the EEG is already saved, the script asks where the sitting was, then about sleep, caffeine, exercise, and paste. The location chooses the 50 Hz or 60 Hz notch used for the scores and later drawings. Whether O1 moved is read from the recording. The blocks are:
 
 1. **Settle, 5 seconds.** No sound. Sit still, eyes open.
 2. **Eyes open, 60 seconds.** One glass sound. Stare at a fixed mark.
 3. **Eyes closed, 60 seconds.** Two pings. Close on the first ping, without squeezing.
 4. **Eyes open, 60 seconds.** One glass sound. Stare at the same mark.
 
-Answer yes to the serial-7 question, or pass `--task serial7`, and two further blocks follow. The terminal prints a three-digit seed before they start.
+Pass `--task serial7` on a focus day. Two further blocks follow, and the terminal prints a three-digit seed before they start. The saved summary still scores 8–12 Hz alpha, including the Fz line. The focus score is separate: Fz 4–8 Hz during serial 7, divided by the eyes-open stare. See [Focus and engagement](#focus-and-engagement).
 
 5. **Serial 7, 60 seconds.** Three pings. Eyes open. Subtract 7 from the seed, silently, until the next sound.
 6. **Eyes open, 30 seconds.** One glass sound. Stop calculating and stare at the mark.
@@ -136,7 +137,7 @@ The low sound means the files are saved. Scoring leaves out the first 2 seconds 
 Each run writes three files and appends one row to the index:
 
 - `recordings/alpha-<timestamp>.xdf` — EEG and markers
-- `recordings/alpha-<timestamp>.txt` — O1, Oz, and O2 alpha levels
+- `recordings/alpha-<timestamp>.txt` — alpha levels for each channel that moved, labeled O1, Oz, O2, POz, and Fz
 - `recordings/alpha-<timestamp>.yaml` — the answers from the start of the session
 - `recordings/index.csv` — one row per session
 
@@ -147,6 +148,30 @@ diy-eeg-daily --annotate recordings/alpha-<timestamp>.xdf
 ```
 
 A caffeine or exercise day is the same command twice. Use the same pair id on both runs, and fill in the minutes-since questions on the second one. Leave a session marked `qc: fail` out of plots. The XDF is still kept.
+
+To review the saved days in a browser:
+
+```zsh
+diy-eeg-report
+```
+
+That writes `recordings/report.html` from your own index. Open it in a browser. The top reads the trend in words. The chart can switch between O1, Oz, O2, the Fz focus ratio, the Fz engagement index during serial 7, and Fz theta/beta during serial 7. It can hide runs shorter than 30 seconds. Pick one session to see its waveform or spectrum, and switch channels on and off. The stare and serial-7 levels for engagement and theta/beta sit under the picker, with sleep, caffeine, and paste. That file stays in `recordings/` and is not part of this repository.
+
+## Focus and engagement
+
+A focus day is `diy-eeg-daily --task serial7`. Three scores come from the Fz electrode during that minute of silent subtraction. Each one leaves out the first 2 seconds after the cue, and each one uses the mains notch chosen for that sitting. The eyes-open side is the mean of the first two eyes-open blocks. A day without serial 7, or a still Fz input, has no focus score.
+
+- **Fz focus** is the 4–8 Hz level during serial 7, divided by the same level during the eyes-open stare. Above 1 means that slower frontal rhythm was stronger while subtracting than while staring. This number is stored on the session index as `fz_theta_ratio`.
+- **Engagement** is beta (13–30 Hz) divided by alpha (8–12 Hz) plus theta (4–8 Hz), at Fz. The report shows it for the stare and for serial 7. On this task it usually falls when theta rises. It is a rhythm ratio, not a clinical measure of attention.
+- **Theta/beta** is theta divided by beta at Fz, again for the stare and for serial 7. It usually rises on the same runs where Fz focus is above 1.
+
+Engagement and theta/beta are calculated when `diy-eeg-report` is built beside the recording. The chart buttons draw the serial-7 level. The stare level for the selected session is written under the picker. The spectrum view shades the same three bands: theta 4–8 Hz, alpha 8–12 Hz, and beta 13–30 Hz. A dotted line is the serial-7 minute.
+
+[Documentation/session-report.html](Documentation/session-report.html) is the same page with made-up points and no waveform. To write it again:
+
+```zsh
+diy-eeg-report --example --out Documentation/session-report.html
+```
 
 ## License
 

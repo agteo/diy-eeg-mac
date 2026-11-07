@@ -13,10 +13,36 @@ MONTAGE = {
     "1": "Oz",
     "2": "O2",
     "3": "POz",
+    "4": "Fz",
     "bias": "Fpz",
     "ref": "left-earlobe",
 }
 PASTES = ("fresh", "same-day", "reused")
+# Wall-supply frequency at the sitting. Japan is split: east is 50 Hz, west is 60 Hz.
+LOCATIONS = (
+    ("singapore", "Singapore", 50),
+    ("europe", "Europe", 50),
+    ("united-kingdom", "United Kingdom", 50),
+    ("australia", "Australia", 50),
+    ("china", "China", 50),
+    ("india", "India", 50),
+    ("united-states", "United States", 60),
+    ("canada", "Canada", 60),
+    ("mexico", "Mexico", 60),
+    ("south-korea", "South Korea", 60),
+    ("taiwan", "Taiwan", 60),
+    ("philippines", "Philippines", 60),
+    ("japan-east", "Japan, east", 50),
+    ("japan-west", "Japan, west", 60),
+    ("other-50", "Somewhere else on a 50 Hz grid", 50),
+    ("other-60", "Somewhere else on a 60 Hz grid", 60),
+)
+MAINS_NOTE = (
+    "The wall supply leaks a steady tone into the electrodes. "
+    "That tone is 50 Hz in some countries and 60 Hz in others. "
+    "Scores and drawings remove a narrow notch at that tone so it is not counted as brain rhythm. "
+    "The saved recording is left as it was."
+)
 INDEX_COLUMNS = [
     "started",
     "protocol",
@@ -32,6 +58,8 @@ INDEX_COLUMNS = [
     "pair_id",
     "drowsy_1_to_5",
     "paste",
+    "location",
+    "mains_hz",
     "montage_confirmed",
     "serial7_seed",
     "ratio_o1",
@@ -41,15 +69,40 @@ INDEX_COLUMNS = [
     "peak_hz_oz",
     "peak_hz_o2",
     "task_ratio_o1",
+    "fz_theta_ratio",
     "anomalies",
 ]
 _PLAIN = re.compile(r"^[A-Za-z0-9_./+-]+$")
 
 
+def mains_hz_from_session(path: Path) -> float | None:
+    """Read ``mains_hz`` from a session log written beside an XDF. None when it was not saved."""
+    log = path.with_suffix(".yaml")
+    if not log.exists():
+        return None
+    for line in log.read_text().splitlines():
+        if not line.startswith("mains_hz:"):
+            continue
+        try:
+            value = float(line.split(":", 1)[1].strip())
+        except ValueError:
+            return None
+        if value in (50.0, 60.0):
+            return value
+        return None
+    return None
+
+
 def prompt_context(input_fn=input) -> dict:
     """Ask for the context around a recording that has already been saved."""
     print("\nRecording saved. A few questions about this sitting.")
-    print("Montage: channel 0 O1, 1 Oz, 2 O2, 3 POz. Bias Fpz. Reference left earlobe.")
+    print(MAINS_NOTE)
+    print("Where was this sitting?")
+    for key, label, hz in LOCATIONS:
+        print(f"  {key} — {label} ({hz} Hz)")
+    location = _choice(input_fn, "Location: ", tuple(key for key, _, _ in LOCATIONS))
+    mains_hz = next(hz for key, _, hz in LOCATIONS if key == location)
+    print("Montage: channel 0 O1, 1 Oz, 2 O2, 3 POz, 4 Fz. Bias Fpz. Reference left earlobe.")
     confirmed = _yes(input_fn, "Is that how this session was wired?", default_yes=True)
     montage_note = "" if confirmed else _required_text(input_fn, "What is different? ")
     hours = _required_float(input_fn, "Hours since wake: ", 0, 24)
@@ -75,6 +128,8 @@ def prompt_context(input_fn=input) -> dict:
         "pair_id": pair_id,
         "drowsy_1_to_5": drowsy,
         "paste": paste,
+        "location": location,
+        "mains_hz": mains_hz,
         "anomalies": anomalies,
     }
 
@@ -111,12 +166,15 @@ def session_document(
         "pair_id": context["pair_id"],
         "drowsy_1_to_5": int(context["drowsy_1_to_5"]),
         "paste": context["paste"],
+        "location": context["location"],
+        "mains_hz": context["mains_hz"],
         "serial7_seed": serial7_seed,
         "qc": context["qc"],
         "anomalies": context["anomalies"],
         "ratio": {name: metrics[name]["ratio"] for name in ("O1", "Oz", "O2") if name in metrics},
         "peak_hz": {name: metrics[name]["peak_hz"] for name in ("O1", "Oz", "O2") if name in metrics},
         "task_ratio": {name: metrics[name]["task_ratio"] for name in ("O1", "Oz", "O2") if name in metrics},
+        "fz_theta_ratio": context.get("fz_theta_ratio"),
     }
 
 
@@ -136,15 +194,34 @@ def write_session(path: Path, data: dict) -> None:
     path.write_text(dump_session(data))
 
 
-def _read_index(path: Path) -> list[dict[str, str]]:
+def read_index(path: Path) -> list[dict[str, str]]:
+    """Read the session index, adding any missing columns from this version."""
     with path.open(newline="") as handle:
         reader = csv.DictReader(handle)
-        if reader.fieldnames != INDEX_COLUMNS:
-            raise SystemExit(
-                f"{path} has a different header from this version of diy-eeg-daily. "
-                "Leave that file in place and record into another directory."
-            )
-        return list(reader)
+        fields = list(reader.fieldnames or [])
+        rows = [{key: (row.get(key) or "") for key in INDEX_COLUMNS} for row in reader]
+    if fields == INDEX_COLUMNS:
+        return rows
+    if fields and set(fields) <= set(INDEX_COLUMNS):
+        write_index(path, rows)
+        return rows
+    raise SystemExit(
+        f"{path} has a different header from this version of diy-eeg-daily. "
+        "Leave that file in place and record into another directory."
+    )
+
+
+def write_index(path: Path, rows: list[dict]) -> None:
+    """Rewrite the session index with the current columns."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=INDEX_COLUMNS)
+        writer.writeheader()
+        writer.writerows([{key: _csv_value(row.get(key)) for key in INDEX_COLUMNS} for row in rows])
+
+
+def _read_index(path: Path) -> list[dict[str, str]]:
+    return read_index(path)
 
 
 def append_index(path: Path, row: dict) -> None:
@@ -192,6 +269,8 @@ def index_row(document: dict) -> dict:
         "pair_id": document["pair_id"],
         "drowsy_1_to_5": document["drowsy_1_to_5"],
         "paste": document["paste"],
+        "location": document.get("location"),
+        "mains_hz": document.get("mains_hz"),
         "montage_confirmed": document["montage_confirmed"],
         "serial7_seed": document["serial7_seed"],
         "ratio_o1": ratio.get("O1"),
@@ -201,6 +280,7 @@ def index_row(document: dict) -> dict:
         "peak_hz_oz": peak.get("Oz"),
         "peak_hz_o2": peak.get("O2"),
         "task_ratio_o1": task.get("O1"),
+        "fz_theta_ratio": document.get("fz_theta_ratio"),
         "anomalies": document["anomalies"],
     }
 
